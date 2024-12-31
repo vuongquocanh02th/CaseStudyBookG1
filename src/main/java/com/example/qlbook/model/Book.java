@@ -1,23 +1,34 @@
 package com.example.qlbook.model;
 
 public class Book {
+    private int id;
     private String name;
     private String descriptiton;
     private String imageUrl;
     private boolean status;
-    private Author author;
-    private Genre genre;
+    private int author_id;
+    private int genre_id;
+
 
     public Book() {
     }
 
-    public Book(String name, String descriptiton, String imageUrl, boolean status, Author author, Genre genre) {
+    public Book(int id, String name, String descriptiton, String imageUrl, boolean status, int author_id, int genre_id) {
+        this.id = id;
         this.name = name;
         this.descriptiton = descriptiton;
         this.imageUrl = imageUrl;
         this.status = status;
-        this.author = author;
-        this.genre = genre;
+        this.author_id = author_id;
+        this.genre_id = genre_id;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -52,19 +63,19 @@ public class Book {
         this.status = status;
     }
 
-    public Author getAuthor() {
-        return author;
+    public int getAuthor_id() {
+        return author_id;
     }
 
-    public void setAuthor(Author author) {
-        this.author = author;
+    public void setAuthor_id(int author_id) {
+        this.author_id = author_id;
     }
 
-    public Genre getGenre() {
-        return genre;
+    public int getGenre_id() {
+        return genre_id;
     }
 
-    public void setGenre(Genre genre) {
-        this.genre = genre;
+    public void setGenre_id(int genre_id) {
+        this.genre_id = genre_id;
     }
 }

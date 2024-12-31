@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 public interface IStudentDAO {
-    public void insertUser(Student student) throws SQLException;
+    public void inserStudent(Student student) throws SQLException;
 
     public Student selectStudent(int id);
 

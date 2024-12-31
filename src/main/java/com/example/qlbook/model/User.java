@@ -1,6 +1,7 @@
 package com.example.qlbook.model;
 
 public class User {
+    private int id;
     private String userName;
     private String password;
     private String role;
@@ -8,10 +9,19 @@ public class User {
     public User() {
     }
 
-    public User(String userName, String password, String role) {
+    public User(int id,String userName, String password, String role) {
+        this.id = id;
         this.userName = userName;
         this.password = password;
         this.role = role;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public String getUserName() {

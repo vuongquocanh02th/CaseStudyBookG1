@@ -1,5 +1,6 @@
 package com.example.qlbook.model;
 
+import java.sql.Time;
 import java.time.LocalDateTime;
 
 public class Student {
@@ -7,26 +8,18 @@ public class Student {
     private String name;
     private String className;
     private String address;
-    private LocalDateTime brithDate;
-    private Book book;
+    private Time brithDate;
+
 
     public Student() {
     }
 
-    public Student(int id, String name, String className, String address, LocalDateTime brithDate) {
+    public Student(int id, String name, String className, String address, Time brithDate) {
         this.id = id;
         this.name = name;
         this.className = className;
         this.address = address;
         this.brithDate = brithDate;
-    }
-
-    public Book getBook() {
-        return book;
-    }
-
-    public void setBook(Book book) {
-        this.book = book;
     }
 
     public int getId() {
@@ -61,11 +54,11 @@ public class Student {
         this.address = address;
     }
 
-    public LocalDateTime getBrithDate() {
+    public Time getBrithDate() {
         return brithDate;
     }
 
-    public void setBrithDate(LocalDateTime brithDate) {
+    public void setBrithDate(Time brithDate) {
         this.brithDate = brithDate;
     }
 }
