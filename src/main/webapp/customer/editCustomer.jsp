@@ -72,7 +72,7 @@
         <%= request.getAttribute("message") %>
     </div>
     <% } %>
-    <form action="/customers" method="post">
+    <form action="${pageContext.request.contextPath}/customers" method="post">
         <input type="hidden" name="action" value="update">
         <input type="hidden" name="id" value="${customer.id}">
         <label>Name:</label>
@@ -85,7 +85,7 @@
         <input type="date" name="dob" value="${customer.dob}">
         <button type="submit">Update</button>
     </form>
-    <form action="/customers">
+    <form action="${pageContext.request.contextPath}/customers">
         <button type="submit" class="back-button">Back to Customer List</button>
     </form>
 </div>

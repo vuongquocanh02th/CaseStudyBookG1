@@ -6,34 +6,20 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import dbconnect.DBConnection;
 
 public class CustomerDAO implements ICustomerDAO{
-    private String jdbcURL = "jdbc:mysql://localhost:3306/bookdb?useSSL=false";
-    private String jdbcUsername = "root";
-    private String jdbcPassword = "123456";
 
     private static final String SELECT_ALL_CUSTOMERS = "SELECT * FROM Customer";
     private static final String SELECT_CUSTOMER_BY_ID = "select * from customer where id = ?";
     private static final String UPDATE_CUSTOMER = "UPDATE Customer SET Name = ?, SchoolName = ?, Address = ?, DOB = ? WHERE ID = ?";
     private static final String DELETE_CUSTOMER = "DELETE FROM Customer WHERE ID = ?";
 
-    protected Connection getConnection() {
-        Connection connection = null;
-        try {
-            Class.forName("com.mysql.jdbc.Driver");
-            connection = DriverManager.getConnection(jdbcURL, jdbcUsername, jdbcPassword);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-        return connection;
-    }
 
     @Override
     public List<Customer> getAllCustomers() {
         List<Customer> customers = new ArrayList<>();
-        try(Connection connection = getConnection();
+        try(Connection connection = DBConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(SELECT_ALL_CUSTOMERS);){
             ResultSet resultSet = statement.executeQuery();
             while(resultSet.next()) {
@@ -55,7 +41,7 @@ public class CustomerDAO implements ICustomerDAO{
     @Override
     public Customer getCustomerById(int id) {
         Customer customer = null;
-        try(Connection connection = getConnection();
+        try(Connection connection = DBConnection.getConnection();
         PreparedStatement statement = connection.prepareStatement(SELECT_CUSTOMER_BY_ID);){
             statement.setInt(1, id);
             ResultSet resultSet = statement.executeQuery();
@@ -76,7 +62,7 @@ public class CustomerDAO implements ICustomerDAO{
 
     @Override
     public boolean updateCustomer(Customer customer) {
-        try(Connection connection = getConnection();
+        try(Connection connection = DBConnection.getConnection();
         PreparedStatement statement = connection.prepareStatement(UPDATE_CUSTOMER)) {
             statement.setString(1, customer.getName());
             statement.setString(2, customer.getSchoolName());
@@ -92,7 +78,7 @@ public class CustomerDAO implements ICustomerDAO{
 
     @Override
     public boolean deleteCustomer(int id) {
-        try(Connection connection = getConnection();
+        try(Connection connection = DBConnection.getConnection();
         PreparedStatement statement = connection.prepareStatement(DELETE_CUSTOMER);) {
             statement.setInt(1, id);
             return statement.executeUpdate() > 0;
