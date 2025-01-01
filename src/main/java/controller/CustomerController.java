@@ -30,8 +30,7 @@ public class CustomerController extends HttpServlet {
             req.setAttribute("customer", existingCustomer);
             req.getRequestDispatcher("customer/editCustomer.jsp").forward(req, resp);
         }else {
-            List<Customer> customers = customerDAO.getAllCustomers();
-            req.setAttribute("customers", customers);
+            req.setAttribute("customers", customerDAO.getAllCustomers());
             req.getRequestDispatcher("customer/customer.jsp").forward(req, resp);
         }
     }
@@ -47,8 +46,15 @@ public class CustomerController extends HttpServlet {
             Date dob = Date.valueOf(req.getParameter("dob"));
 
             Customer customer = new Customer(id, name, schoolName, address, dob);
-            customerDAO.updateCustomer(customer);
-            resp.sendRedirect("/customers");
+            boolean success = customerDAO.updateCustomer(customer);
+            req.setAttribute("customer", customer);
+            if(success) {
+                req.setAttribute("message", "Customer successfully updated!");
+            }else {
+                req.setAttribute("message", "Customer updated failed! Try Again!");
+            }
+
+            req.getRequestDispatcher("customer/editCustomer.jsp").forward(req, resp);
         }
     }
 }
