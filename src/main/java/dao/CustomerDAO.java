@@ -12,7 +12,7 @@ public class CustomerDAO implements ICustomerDAO{
 
     private static final String SELECT_ALL_CUSTOMERS = "SELECT * FROM Customer";
     private static final String SELECT_CUSTOMER_BY_ID = "select * from customer where id = ?";
-    private static final String UPDATE_CUSTOMER = "UPDATE Customer SET Name = ?, SchoolName = ?, Address = ?, DOB = ? WHERE ID = ?";
+    private static final String UPDATE_CUSTOMER = "UPDATE Customer SET name = ?, schoolName = ?, address = ?, dob = ? WHERE id = ?";
     private static final String DELETE_CUSTOMER = "DELETE FROM Customer WHERE ID = ?";
 
 
@@ -70,10 +70,9 @@ public class CustomerDAO implements ICustomerDAO{
             statement.setDate(4, new java.sql.Date(customer.getDob().getTime()));
             statement.setInt(5, customer.getId());
             return statement.executeUpdate() > 0;
-        }catch (SQLException e){
-            e.printStackTrace();
+        }catch (SQLException e) {
+            throw new RuntimeException("Error updating customer with ID: " + customer.getId(), e);
         }
-        return false;
     }
 
     @Override

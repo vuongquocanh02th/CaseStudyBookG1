@@ -1,93 +1,147 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<html>
 <head>
     <title>Edit Customer</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
+            font-family: 'Arial', sans-serif;
             background-color: #f4f4f9;
             margin: 0;
+            padding: 0;
         }
-        .form-container {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
+
+        .container {
+            width: 80%;
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: white;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 400px;
+            border-radius: 8px;
         }
+
         h1 {
             text-align: center;
-            margin-bottom: 20px;
+            color: #333;
         }
-        label {
-            font-weight: bold;
-            margin-top: 10px;
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
             display: block;
+            font-size: 14px;
+            color: #333;
+            margin-bottom: 5px;
         }
-        input[type="text"], input[type="date"] {
+
+        .form-group input[type="text"],
+        .form-group input[type="date"] {
             width: 100%;
             padding: 10px;
-            margin-top: 5px;
-            margin-bottom: 20px;
             border: 1px solid #ccc;
             border-radius: 5px;
+            font-size: 14px;
+            box-sizing: border-box;
+            transition: border-color 0.3s ease;
         }
-        button {
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="date"]:focus {
+            border-color: #007bff;
+            outline: none;
+        }
+
+        .btn-submit {
             width: 100%;
-            padding: 10px;
-            background-color: #28a745;
+            padding: 12px;
+            background-color: #007bff;
             color: white;
             border: none;
             border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
+            transition: background-color 0.3s ease;
         }
-        button:hover {
-            background-color: #218838;
-        }
-        .back-button {
-            background-color: #007bff;
-            margin-top: 10px;
-        }
-        .back-button:hover {
+
+        .btn-submit:hover {
             background-color: #0056b3;
         }
-        .notification {
-            color: green;
+
+        .message {
             text-align: center;
-            margin-bottom: 15px;
+            margin-bottom: 20px;
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+        .message.success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+
+        .message.error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            font-size: 14px;
+            text-decoration: none;
+            color: #007bff;
+            transition: color 0.3s ease;
+        }
+
+        .back-link:hover {
+            color: #0056b3;
         }
     </style>
 </head>
+
 <body>
-<div class="form-container">
+<div class="container">
     <h1>Edit Customer</h1>
-    <% if (request.getAttribute("message") != null) { %>
-    <div class="notification">
-        <%= request.getAttribute("message") %>
-    </div>
-    <% } %>
-    <form action="${pageContext.request.contextPath}/customers" method="post">
-        <input type="hidden" name="action" value="update">
+
+    <!-- Display success or error message -->
+    <c:if test="${not empty message}">
+        <div class="message success">${message}</div>
+    </c:if>
+
+    <c:if test="${not empty errorMessage}">
+        <div class="message error">${errorMessage}</div>
+    </c:if>
+
+    <form action="customers" method="post">
+        <input type="hidden" name="action" value="edit">
         <input type="hidden" name="id" value="${customer.id}">
-        <label>Name:</label>
-        <input type="text" name="name" value="${customer.name}" required>
-        <label>School Name:</label>
-        <input type="text" name="schoolName" value="${customer.schoolName}">
-        <label>Address:</label>
-        <input type="text" name="address" value="${customer.address}">
-        <label>Date of Birth:</label>
-        <input type="date" name="dob" value="${customer.dob}">
-        <button type="submit">Update</button>
+
+        <div class="form-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" name="name" value="${customer.name}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="schoolName">School Name:</label>
+            <input type="text" id="schoolName" name="schoolName" value="${customer.schoolName}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" value="${customer.address}" required>
+        </div>
+
+        <div class="form-group">
+            <label for="dob">Date of Birth:</label>
+            <input type="date" id="dob" name="dob" value="${customer.dob}" required>
+        </div>
+
+        <button type="submit" class="btn-submit">Update Customer</button>
     </form>
-    <form action="${pageContext.request.contextPath}/customers">
-        <button type="submit" class="back-button">Back to Customer List</button>
-    </form>
+
+    <a href="customers" class="back-link">Back to Customer List</a>
 </div>
 </body>
-</html>

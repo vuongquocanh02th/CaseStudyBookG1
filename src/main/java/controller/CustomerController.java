@@ -10,8 +10,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Date;
-import java.util.List;
-
 
 @WebServlet("/customers")
 public class CustomerController extends HttpServlet {
@@ -24,12 +22,22 @@ public class CustomerController extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
-        if("edit".equals(action)) {
-            int id = Integer.parseInt(req.getParameter("id"));
-            Customer existingCustomer = customerDAO.getCustomerById(id);
-            req.setAttribute("customer", existingCustomer);
-            req.getRequestDispatcher("customer/editCustomer.jsp").forward(req, resp);
-        }else {
+        if ("edit".equals(action)) {
+            try {
+                int id = Integer.parseInt(req.getParameter("id"));
+                Customer existingCustomer = customerDAO.getCustomerById(id);
+                if (existingCustomer != null) {
+                    req.setAttribute("customer", existingCustomer);
+                    req.getRequestDispatcher("customer/editCustomer.jsp").forward(req, resp);
+                } else {
+                    req.setAttribute("errorMessage", "Customer not found.");
+                    req.getRequestDispatcher("error.jsp").forward(req, resp);
+                }
+            } catch (NumberFormatException e) {
+                req.setAttribute("errorMessage", "Invalid customer ID format.");
+                req.getRequestDispatcher("error.jsp").forward(req, resp);
+            }
+        } else {
             req.setAttribute("customers", customerDAO.getAllCustomers());
             req.getRequestDispatcher("customer/customer.jsp").forward(req, resp);
         }
@@ -38,23 +46,31 @@ public class CustomerController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String action = req.getParameter("action");
-        if("edit".equals(action)) {
-            int id = Integer.parseInt(req.getParameter("id"));
-            String name = req.getParameter("name");
-            String schoolName = req.getParameter("schoolName");
-            String address = req.getParameter("address");
-            Date dob = Date.valueOf(req.getParameter("dob"));
+        if ("edit".equals(action)) {
+            try {
+                int id = Integer.parseInt(req.getParameter("id"));
+                String name = req.getParameter("name");
+                String schoolName = req.getParameter("schoolName");
+                String address = req.getParameter("address");
+                Date dob = Date.valueOf(req.getParameter("dob"));
 
-            Customer customer = new Customer(id, name, schoolName, address, dob);
-            boolean success = customerDAO.updateCustomer(customer);
-            req.setAttribute("customer", customer);
-            if(success) {
-                req.setAttribute("message", "Customer successfully updated!");
-            }else {
-                req.setAttribute("message", "Customer updated failed! Try Again!");
+                Customer customer = new Customer(id, name, schoolName, address, dob);
+                boolean success = customerDAO.updateCustomer(customer);
+
+                // Set success or failure message
+                if (success) {
+                    req.setAttribute("message", "Customer successfully updated!");
+                } else {
+                    req.setAttribute("message", "Customer update failed! Try Again!");
+                }
+
+                // Forward back to the edit page with the success message
+                req.setAttribute("customer", customer); // Send the updated customer back to the page
+                req.getRequestDispatcher("customer/editCustomer.jsp").forward(req, resp);
+            } catch (Exception e) {
+                req.setAttribute("errorMessage", "An error occurred while processing the request.");
+                req.getRequestDispatcher("error.jsp").forward(req, resp);
             }
-
-            req.getRequestDispatcher("customer/editCustomer.jsp").forward(req, resp);
         }
     }
 }
