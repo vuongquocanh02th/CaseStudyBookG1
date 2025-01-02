@@ -1,24 +1,12 @@
 package model;
 
-import java.util.Date;
-
 public class Borrow {
     private int id;
     private int customerId;
-    private Date borrowDate;
-    private Date returnDate;
+    private int bookId;
+    private String borrowDate;
 
-    // Constructors
-    public Borrow() {}
-
-    public Borrow(int id, int customerId, Date borrowDate, Date returnDate) {
-        this.id = id;
-        this.customerId = customerId;
-        this.borrowDate = borrowDate;
-        this.returnDate = returnDate;
-    }
-
-    // Getters and Setters
+    // Getters and setters
     public int getId() {
         return id;
     }
@@ -35,20 +23,19 @@ public class Borrow {
         this.customerId = customerId;
     }
 
-    public Date getBorrowDate() {
+    public int getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
+    }
+
+    public String getBorrowDate() {
         return borrowDate;
     }
 
-    public void setBorrowDate(Date borrowDate) {
+    public void setBorrowDate(String borrowDate) {
         this.borrowDate = borrowDate;
     }
-
-    public Date getReturnDate() {
-        return returnDate;
-    }
-
-    public void setReturnDate(Date returnDate) {
-        this.returnDate = returnDate;
-    }
 }
-

@@ -1,18 +1,10 @@
 package model;
 
-public class Genres {
+public class Category {
     private int id;
     private String name;
 
-    // Constructors
-    public Genres() {}
-
-    public Genres(int id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    // Getters and Setters
+    // Getters and setters
     public int getId() {
         return id;
     }
