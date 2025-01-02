@@ -23,6 +23,8 @@ public class Book {
         this.genre_id = genre_id;
     }
 
+
+
     public int getId() {
         return id;
     }
