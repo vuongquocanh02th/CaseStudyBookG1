@@ -3,33 +3,34 @@ package service.category;
 import dao.category.ICategoryDAO;
 import dao.category.CategoryDAOImpl;
 import model.Category;
+
 import java.util.List;
 
 public class CategoryServiceImpl implements ICategoryService {
     private ICategoryDAO categoryDAO = new CategoryDAOImpl();
 
     @Override
-    public List<Category> getAllCategories() {
-        return categoryDAO.getAllCategories();
+    public List<Category> findAll() {
+        return categoryDAO.findAll();
     }
 
     @Override
-    public Category getCategoryById(int id) {
-        return categoryDAO.getCategoryById(id);
+    public Category findById(int id) {
+        return categoryDAO.findById(id);
     }
 
     @Override
-    public void addCategory(Category category) {
-        categoryDAO.addCategory(category);
+    public void save(Category category) {
+        categoryDAO.save(category);
     }
 
     @Override
-    public void updateCategory(Category category) {
-        categoryDAO.updateCategory(category);
+    public void update(Category category) {
+        categoryDAO.update(category);
     }
 
     @Override
-    public void deleteCategory(int id) {
-        categoryDAO.deleteCategory(id);
+    public void delete(int id) {
+        categoryDAO.delete(id);
     }
 }

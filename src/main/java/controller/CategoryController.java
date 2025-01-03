@@ -4,53 +4,30 @@ import model.Category;
 import service.category.ICategoryService;
 import service.category.CategoryServiceImpl;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+@WebServlet("/categories")
 public class CategoryController extends HttpServlet {
-    private ICategoryService categoryService;
+    private ICategoryService categoryService = new CategoryServiceImpl();
 
     @Override
-    public void init() throws ServletException {
-        categoryService = new CategoryServiceImpl();
-    }
-
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         if (action == null) {
-            action = "list";
+            action = "";
         }
-
         switch (action) {
-            case "new":
-                showNewForm(request, response);
+            case "add":
+                showAddForm(request, response);
                 break;
             case "edit":
                 showEditForm(request, response);
-                break;
-            case "delete":
-                deleteCategory(request, response);
-                break;
-            default:
-                listCategories(request, response);
-                break;
-        }
-    }
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
-        if (action == null) {
-            action = "list";
-        }
-
-        switch (action) {
-            case "insert":
-                insertCategory(request, response);
-                break;
-            case "update":
-                updateCategory(request, response);
                 break;
             default:
                 listCategories(request, response);
@@ -59,48 +36,59 @@ public class CategoryController extends HttpServlet {
     }
 
     private void listCategories(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Category> listCategory = categoryService.getAllCategories();
-        request.setAttribute("listCategory", listCategory);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("categories/list.jsp");
-        dispatcher.forward(request, response);
+        List<Category> categories = categoryService.findAll();
+        request.setAttribute("categories", categories);
+        request.getRequestDispatcher("/categories/list.jsp").forward(request, response);
     }
 
-    private void showNewForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RequestDispatcher dispatcher = request.getRequestDispatcher("categories/add.jsp");
-        dispatcher.forward(request, response);
+    private void showAddForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/categories/add.jsp").forward(request, response);
     }
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        Category existingCategory = categoryService.getCategoryById(id);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("categories/edit.jsp");
+        Category existingCategory = categoryService.findById(id);
         request.setAttribute("category", existingCategory);
-        dispatcher.forward(request, response);
+        request.getRequestDispatcher("/categories/edit.jsp").forward(request, response);
     }
 
-    private void insertCategory(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+        if (action == null) {
+            action = "";
+        }
+        switch (action) {
+            case "add":
+                addCategory(request, response);
+                break;
+            case "edit":
+                updateCategory(request, response);
+                break;
+            case "delete":
+                deleteCategory(request, response);
+                break;
+        }
+    }
+
+    private void addCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String name = request.getParameter("name");
-        Category newCategory = new Category();
-        newCategory.setName(name);
-        categoryService.addCategory(newCategory);
-        response.sendRedirect("list");
+        Category newCategory = new Category(name);
+        categoryService.save(newCategory);
+        response.sendRedirect("/categories");
     }
 
-    private void updateCategory(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void updateCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         String name = request.getParameter("name");
-
-        Category category = new Category();
-        category.setId(id);
-        category.setName(name);
-
-        categoryService.updateCategory(category);
-        response.sendRedirect("list");
+        Category category = new Category(id, name);
+        categoryService.update(category);
+        response.sendRedirect("/categories");
     }
 
-    private void deleteCategory(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void deleteCategory(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        categoryService.deleteCategory(id);
-        response.sendRedirect("list");
+        categoryService.delete(id);
+        response.sendRedirect("/categories");
     }
 }

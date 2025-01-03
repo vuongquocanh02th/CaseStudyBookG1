@@ -4,9 +4,9 @@ import model.Category;
 import java.util.List;
 
 public interface ICategoryService {
-    List<Category> getAllCategories();
-    Category getCategoryById(int id);
-    void addCategory(Category category);
-    void updateCategory(Category category);
-    void deleteCategory(int id);
+    List<Category> findAll();
+    Category findById(int id);
+    void save(Category category);
+    void update(Category category);
+    void delete(int id);
 }
