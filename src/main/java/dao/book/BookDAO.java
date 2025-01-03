@@ -17,7 +17,7 @@ public class BookDAO implements IBookDAO {
     private static final String SELECT_BOOKS_BY_ID = "select * from books where id = ?";
     private static final String UPDATE_BOOK = "UPDATE Books SET bookName = ?, description = ?, status = ?, genId = ?, publisherId = ?, categoryId = ? WHERE id = ?";
     private static final String DELETE_BOOK = "DELETE FROM Books WHERE ID = ?";
-    private static final String INSERT_BOOK = "INSERT INTO books (bookName, description, status, genId, publisherId, categoryId) VALUES (?, ?, ?, ?, ?, ?)";
+    private static final String INSERT_BOOK = "INSERT INTO Books (BookName, Description, Status, GenID, PublisherID, CategoryID) values (?, ?, ?, ?, ?, ?)";
     private static final String SELECT_ALL_BOOKS_INFO = "SELECT b.ID, b.BookName, b.Description, b.Status, g.Name as GenreName, p.Name as PublisherName, c.Name as CategoryName FROM Books b JOIN Genres g ON b.GenID = g.ID JOIN Publishers p ON b.PublisherID = p.PublisherID JOIN Categories c ON b.CategoryID = c.CategoryID";
 
 
@@ -66,11 +66,18 @@ public class BookDAO implements IBookDAO {
             ps.setInt(4, book.getGenId());
             ps.setInt(5, book.getPublisherId());
             ps.setInt(6, book.getCategoryId());
-            return ps.executeUpdate() > 0;
+            int rowsAffected = ps.executeUpdate(); // Kiểm tra số dòng bị ảnh hưởng
+            if (rowsAffected > 0) {
+                System.out.println("Book added successfully.");
+                return true;
+            } else {
+                System.out.println("No rows affected.");
+                return false;
+            }
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     @Override

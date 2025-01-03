@@ -70,13 +70,15 @@
     %>
     <div class="link-box">
         <% if ("admin".equals(role)) { %>
-        <a href="${pageContext.request.contextPath}/books">Manage Books</a>
+        <a href="${pageContext.request.contextPath}/books?action=listBooks">Manage Books</a>
         <a href="${pageContext.request.contextPath}/categories">Manage Categories</a>
         <a href="${pageContext.request.contextPath}/genres">Manage Genres</a>
         <a href="${pageContext.request.contextPath}/publishers">Manage Publishers</a>
         <a href="${pageContext.request.contextPath}/customers">Manage Customers</a>
+        <a href="${pageContext.request.contextPath}/borrow?action=manageBorrows">Manage Borrows</a>
         <% } else if ("user".equals(role)) { %>
         <a href="${pageContext.request.contextPath}/books">View Books</a>
+        <a href="${pageContext.request.contextPath}/borrow?action=borrowBooks">Borrow Books</a>
         <% } %>
     </div>
 </div>
