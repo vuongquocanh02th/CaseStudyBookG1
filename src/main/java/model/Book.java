@@ -2,11 +2,34 @@ package model;
 
 public class Book {
     private int id;
-    private String title;
-    private String author;
-    private String category;
+    private String bookName;
+    private String description;
+    private String status;
+    private Integer genID;
+    private Integer publisherID;
+    private Integer categoryID;
 
-    // Getters and setters
+    public Book() {}
+
+    public Book(String bookName, String description, String status, Integer genID, Integer publisherID, Integer categoryID) {
+        this.bookName = bookName;
+        this.description = description;
+        this.status = status;
+        this.genID = genID;
+        this.publisherID = publisherID;
+        this.categoryID = categoryID;
+    }
+
+    public Book(int id, String bookName, String description, String status, Integer genID, Integer publisherID, Integer categoryID) {
+        this.id = id;
+        this.bookName = bookName;
+        this.description = description;
+        this.status = status;
+        this.genID = genID;
+        this.publisherID = publisherID;
+        this.categoryID = categoryID;
+    }
+
     public int getId() {
         return id;
     }
@@ -15,27 +38,51 @@ public class Book {
         this.id = id;
     }
 
-    public String getTitle() {
-        return title;
+    public String getBookName() {
+        return bookName;
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
     }
 
-    public String getAuthor() {
-        return author;
+    public String getDescription() {
+        return description;
     }
 
-    public void setAuthor(String author) {
-        this.author = author;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public String getCategory() {
-        return category;
+    public String getStatus() {
+        return status;
     }
 
-    public void setCategory(String category) {
-        this.category = category;
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public Integer getGenID() {
+        return genID;
+    }
+
+    public void setGenID(Integer genID) {
+        this.genID = genID;
+    }
+
+    public Integer getPublisherID() {
+        return publisherID;
+    }
+
+    public void setPublisherID(Integer publisherID) {
+        this.publisherID = publisherID;
+    }
+
+    public Integer getCategoryID() {
+        return categoryID;
+    }
+
+    public void setCategoryID(Integer categoryID) {
+        this.categoryID = categoryID;
     }
 }
