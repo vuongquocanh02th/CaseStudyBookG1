@@ -8,6 +8,9 @@ public class Book {
     private Integer genID;
     private Integer publisherID;
     private Integer categoryID;
+    private String genreName;
+    private String publisherName;
+    private String categoryName;
 
     public Book() {}
 
@@ -43,6 +46,16 @@ public class Book {
         this.description = description;
         this.status = status;
         this.categoryID = categoryID;
+    }
+
+    public Book(int id, String bookName, String description, String status, String genreName, String publisherName, String categoryName) {
+        this.id = id;
+        this.bookName = bookName;
+        this.description = description;
+        this.status = status;
+        this.genreName = genreName;
+        this.publisherName = publisherName;
+        this.categoryName = categoryName;
     }
 
     // Getters and Setters
@@ -100,5 +113,29 @@ public class Book {
 
     public void setCategoryID(Integer categoryID) {
         this.categoryID = categoryID;
+    }
+
+    public String getGenreName() {
+        return genreName;
+    }
+
+    public void setGenreName(String genreName) {
+        this.genreName = genreName;
+    }
+
+    public String getPublisherName() {
+        return publisherName;
+    }
+
+    public void setPublisherName(String publisherName) {
+        this.publisherName = publisherName;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 }

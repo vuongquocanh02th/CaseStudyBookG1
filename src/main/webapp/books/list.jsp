@@ -24,9 +24,9 @@
             <td>${book.bookName}</td>
             <td>${book.description}</td>
             <td>${book.status}</td>
-            <td>${book.genID}</td>
-            <td>${book.publisherID}</td>
-            <td>${book.categoryID}</td>
+            <td>${book.genreName}</td>
+            <td>${book.publisherName}</td>
+            <td>${book.categoryName}</td>
             <td>
                 <a href="books?action=edit&id=${book.id}">Edit</a>
                 <form action="books" method="post" style="display:inline;">

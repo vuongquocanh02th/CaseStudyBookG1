@@ -6,6 +6,7 @@ import service.book.IBookService;
 import service.book.BookServiceImpl;
 import service.category.ICategoryService;
 import service.category.CategoryServiceImpl;
+import utils.DBConnection;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.*;
 import java.util.List;
 
 @WebServlet("/books")
@@ -89,8 +91,6 @@ public class BookController extends HttpServlet {
         String newGenre = request.getParameter("newGenre");
         Integer genID = null;
         if (newGenre != null && !newGenre.isEmpty()) {
-            // Save new genre and get its ID
-            // Assuming you have a method to save the genre and get its ID
             genID = saveNewGenre(newGenre);
         } else if (genIDStr != null && !genIDStr.isEmpty()) {
             genID = Integer.parseInt(genIDStr);
@@ -101,8 +101,6 @@ public class BookController extends HttpServlet {
         String newPublisher = request.getParameter("newPublisher");
         Integer publisherID = null;
         if (newPublisher != null && !newPublisher.isEmpty()) {
-            // Save new publisher and get its ID
-            // Assuming you have a method to save the publisher and get its ID
             publisherID = saveNewPublisher(newPublisher);
         } else if (publisherIDStr != null && !publisherIDStr.isEmpty()) {
             publisherID = Integer.parseInt(publisherIDStr);
@@ -113,8 +111,6 @@ public class BookController extends HttpServlet {
         String newCategory = request.getParameter("newCategory");
         Integer categoryID = null;
         if (newCategory != null && !newCategory.isEmpty()) {
-            // Save new category and get its ID
-            // Assuming you have a method to save the category and get its ID
             categoryID = saveNewCategory(newCategory);
         } else if (categoryIDStr != null && !categoryIDStr.isEmpty()) {
             categoryID = Integer.parseInt(categoryIDStr);
@@ -136,8 +132,6 @@ public class BookController extends HttpServlet {
         String newGenre = request.getParameter("newGenre");
         Integer genID = null;
         if (newGenre != null && !newGenre.isEmpty()) {
-            // Save new genre and get its ID
-            // Assuming you have a method to save the genre and get its ID
             genID = saveNewGenre(newGenre);
         } else if (genIDStr != null && !genIDStr.isEmpty()) {
             genID = Integer.parseInt(genIDStr);
@@ -148,8 +142,6 @@ public class BookController extends HttpServlet {
         String newPublisher = request.getParameter("newPublisher");
         Integer publisherID = null;
         if (newPublisher != null && !newPublisher.isEmpty()) {
-            // Save new publisher and get its ID
-            // Assuming you have a method to save the publisher and get its ID
             publisherID = saveNewPublisher(newPublisher);
         } else if (publisherIDStr != null && !publisherIDStr.isEmpty()) {
             publisherID = Integer.parseInt(publisherIDStr);
@@ -160,8 +152,6 @@ public class BookController extends HttpServlet {
         String newCategory = request.getParameter("newCategory");
         Integer categoryID = null;
         if (newCategory != null && !newCategory.isEmpty()) {
-            // Save new category and get its ID
-            // Assuming you have a method to save the category and get its ID
             categoryID = saveNewCategory(newCategory);
         } else if (categoryIDStr != null && !categoryIDStr.isEmpty()) {
             categoryID = Integer.parseInt(categoryIDStr);
@@ -178,20 +168,51 @@ public class BookController extends HttpServlet {
         response.sendRedirect("/books");
     }
 
-    // Dummy methods to save new genre, publisher, and category
-    // Replace these with actual implementations
     private Integer saveNewGenre(String newGenre) {
-        // Save new genre and return its ID
-        return 1; // Replace with actual implementation
+        Integer genreID = null;
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Genres (Name) VALUES (?)", Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, newGenre);
+            preparedStatement.executeUpdate();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) {
+                genreID = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return genreID;
     }
 
     private Integer saveNewPublisher(String newPublisher) {
-        // Save new publisher and return its ID
-        return 1; // Replace with actual implementation
+        Integer publisherID = null;
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Publishers (Name) VALUES (?)", Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, newPublisher);
+            preparedStatement.executeUpdate();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) {
+                publisherID = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return publisherID;
     }
 
     private Integer saveNewCategory(String newCategory) {
-        // Save new category and return its ID
-        return 1; // Replace with actual implementation
+        Integer categoryID = null;
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement("INSERT INTO Categories (Name) VALUES (?)", Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setString(1, newCategory);
+            preparedStatement.executeUpdate();
+            ResultSet rs = preparedStatement.getGeneratedKeys();
+            if (rs.next()) {
+                categoryID = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return categoryID;
     }
 }
