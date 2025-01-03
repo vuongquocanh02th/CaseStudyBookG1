@@ -30,6 +30,22 @@ public class Book {
         this.categoryID = categoryID;
     }
 
+    public Book(String bookName, String description, String status, int categoryID) {
+        this.bookName = bookName;
+        this.description = description;
+        this.status = status;
+        this.categoryID = categoryID;
+    }
+
+    public Book(int id, String bookName, String description, String status, int categoryID) {
+        this.id = id;
+        this.bookName = bookName;
+        this.description = description;
+        this.status = status;
+        this.categoryID = categoryID;
+    }
+
+    // Getters and Setters
     public int getId() {
         return id;
     }

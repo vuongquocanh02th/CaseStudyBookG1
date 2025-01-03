@@ -65,21 +65,9 @@ public class BookDAOImpl implements IBookDAO {
             preparedStatement.setString(1, book.getBookName());
             preparedStatement.setString(2, book.getDescription());
             preparedStatement.setString(3, book.getStatus());
-            if (book.getGenID() != null) {
-                preparedStatement.setInt(4, book.getGenID());
-            } else {
-                preparedStatement.setNull(4, Types.INTEGER);
-            }
-            if (book.getPublisherID() != null) {
-                preparedStatement.setInt(5, book.getPublisherID());
-            } else {
-                preparedStatement.setNull(5, Types.INTEGER);
-            }
-            if (book.getCategoryID() != null) {
-                preparedStatement.setInt(6, book.getCategoryID());
-            } else {
-                preparedStatement.setNull(6, Types.INTEGER);
-            }
+            preparedStatement.setObject(4, book.getGenID(), Types.INTEGER);
+            preparedStatement.setObject(5, book.getPublisherID(), Types.INTEGER);
+            preparedStatement.setObject(6, book.getCategoryID(), Types.INTEGER);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -93,21 +81,9 @@ public class BookDAOImpl implements IBookDAO {
             preparedStatement.setString(1, book.getBookName());
             preparedStatement.setString(2, book.getDescription());
             preparedStatement.setString(3, book.getStatus());
-            if (book.getGenID() != null) {
-                preparedStatement.setInt(4, book.getGenID());
-            } else {
-                preparedStatement.setNull(4, Types.INTEGER);
-            }
-            if (book.getPublisherID() != null) {
-                preparedStatement.setInt(5, book.getPublisherID());
-            } else {
-                preparedStatement.setNull(5, Types.INTEGER);
-            }
-            if (book.getCategoryID() != null) {
-                preparedStatement.setInt(6, book.getCategoryID());
-            } else {
-                preparedStatement.setNull(6, Types.INTEGER);
-            }
+            preparedStatement.setObject(4, book.getGenID(), Types.INTEGER);
+            preparedStatement.setObject(5, book.getPublisherID(), Types.INTEGER);
+            preparedStatement.setObject(6, book.getCategoryID(), Types.INTEGER);
             preparedStatement.setInt(7, book.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {

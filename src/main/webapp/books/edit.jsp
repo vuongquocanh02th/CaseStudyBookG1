@@ -1,4 +1,5 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
     <title>Edit Book</title>
@@ -21,17 +22,22 @@
     <select id="genID" name="genID">
         <option value="">Select Genre</option>
         <!-- Options will be populated dynamically -->
-    </select><br>
+    </select>
+    <input type="text" id="newGenre" name="newGenre" placeholder="Or add new genre"><br>
     <label for="publisherID">Publisher:</label>
     <select id="publisherID" name="publisherID">
         <option value="">Select Publisher</option>
         <!-- Options will be populated dynamically -->
-    </select><br>
+    </select>
+    <input type="text" id="newPublisher" name="newPublisher" placeholder="Or add new publisher"><br>
     <label for="categoryID">Category:</label>
     <select id="categoryID" name="categoryID">
         <option value="">Select Category</option>
-        <!-- Options will be populated dynamically -->
-    </select><br>
+        <c:forEach var="category" items="${categories}">
+            <option value="${category.id}" ${book.categoryID == category.id ? 'selected' : ''}>${category.name}</option>
+        </c:forEach>
+    </select>
+    <input type="text" id="newCategory" name="newCategory" placeholder="Or add new category"><br>
     <button type="submit">Update Book</button>
 </form>
 </body>
