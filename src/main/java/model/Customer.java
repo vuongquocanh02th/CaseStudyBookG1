@@ -3,9 +3,27 @@ package model;
 public class Customer {
     private int id;
     private String name;
-    private String email;
+    private String schoolName;
+    private String address;
+    private String dob;
 
-    // Getters and setters
+    public Customer() {}
+
+    public Customer(String name, String schoolName, String address, String dob) {
+        this.name = name;
+        this.schoolName = schoolName;
+        this.address = address;
+        this.dob = dob;
+    }
+
+    public Customer(int id, String name, String schoolName, String address, String dob) {
+        this.id = id;
+        this.name = name;
+        this.schoolName = schoolName;
+        this.address = address;
+        this.dob = dob;
+    }
+
     public int getId() {
         return id;
     }
@@ -22,11 +40,27 @@ public class Customer {
         this.name = name;
     }
 
-    public String getEmail() {
-        return email;
+    public String getSchoolName() {
+        return schoolName;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
+    public void setSchoolName(String schoolName) {
+        this.schoolName = schoolName;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public String getDob() {
+        return dob;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
     }
 }

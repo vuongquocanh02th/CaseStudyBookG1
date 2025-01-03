@@ -3,33 +3,34 @@ package service.customer;
 import dao.customer.ICustomerDAO;
 import dao.customer.CustomerDAOImpl;
 import model.Customer;
+
 import java.util.List;
 
 public class CustomerServiceImpl implements ICustomerService {
     private ICustomerDAO customerDAO = new CustomerDAOImpl();
 
     @Override
-    public List<Customer> getAllCustomers() {
-        return customerDAO.getAllCustomers();
+    public List<Customer> findAll() {
+        return customerDAO.findAll();
     }
 
     @Override
-    public Customer getCustomerById(int id) {
-        return customerDAO.getCustomerById(id);
+    public Customer findById(int id) {
+        return customerDAO.findById(id);
     }
 
     @Override
-    public void addCustomer(Customer customer) {
-        customerDAO.addCustomer(customer);
+    public void save(Customer customer) {
+        customerDAO.save(customer);
     }
 
     @Override
-    public void updateCustomer(Customer customer) {
-        customerDAO.updateCustomer(customer);
+    public void update(Customer customer) {
+        customerDAO.update(customer);
     }
 
     @Override
-    public void deleteCustomer(int id) {
-        customerDAO.deleteCustomer(id);
+    public void delete(int id) {
+        customerDAO.delete(id);
     }
 }

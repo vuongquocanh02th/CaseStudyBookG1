@@ -8,21 +8,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class CustomerDAOImpl implements ICustomerDAO {
+    private static final String SELECT_ALL_CUSTOMERS = "SELECT * FROM Customer";
+    private static final String SELECT_CUSTOMER_BY_ID = "SELECT * FROM Customer WHERE ID = ?";
+    private static final String INSERT_CUSTOMER = "INSERT INTO Customer (Name, SchoolName, Address, DOB) VALUES (?, ?, ?, ?)";
+    private static final String UPDATE_CUSTOMER = "UPDATE Customer SET Name = ?, SchoolName = ?, Address = ?, DOB = ? WHERE ID = ?";
+    private static final String DELETE_CUSTOMER = "DELETE FROM Customer WHERE ID = ?";
 
     @Override
-    public List<Customer> getAllCustomers() {
+    public List<Customer> findAll() {
         List<Customer> customers = new ArrayList<>();
-        String query = "SELECT * FROM customers";
         try (Connection connection = DBConnection.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(query)) {
-
-            while (resultSet.next()) {
-                Customer customer = new Customer();
-                customer.setId(resultSet.getInt("id"));
-                customer.setName(resultSet.getString("name"));
-                customer.setEmail(resultSet.getString("email"));
-                customers.add(customer);
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_CUSTOMERS)) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                String name = rs.getString("Name");
+                String schoolName = rs.getString("SchoolName");
+                String address = rs.getString("Address");
+                String dob = rs.getString("DOB");
+                customers.add(new Customer(id, name, schoolName, address, dob));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -31,20 +35,18 @@ public class CustomerDAOImpl implements ICustomerDAO {
     }
 
     @Override
-    public Customer getCustomerById(int id) {
+    public Customer findById(int id) {
         Customer customer = null;
-        String query = "SELECT * FROM customers WHERE id = ?";
         try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_CUSTOMER_BY_ID)) {
             preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                customer = new Customer();
-                customer.setId(resultSet.getInt("id"));
-                customer.setName(resultSet.getString("name"));
-                customer.setEmail(resultSet.getString("email"));
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                String name = rs.getString("Name");
+                String schoolName = rs.getString("SchoolName");
+                String address = rs.getString("Address");
+                String dob = rs.getString("DOB");
+                customer = new Customer(id, name, schoolName, address, dob);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -53,13 +55,13 @@ public class CustomerDAOImpl implements ICustomerDAO {
     }
 
     @Override
-    public void addCustomer(Customer customer) {
-        String query = "INSERT INTO customers (name, email) VALUES (?, ?)";
+    public void save(Customer customer) {
         try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_CUSTOMER)) {
             preparedStatement.setString(1, customer.getName());
-            preparedStatement.setString(2, customer.getEmail());
+            preparedStatement.setString(2, customer.getSchoolName());
+            preparedStatement.setString(3, customer.getAddress());
+            preparedStatement.setString(4, customer.getDob());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -67,14 +69,14 @@ public class CustomerDAOImpl implements ICustomerDAO {
     }
 
     @Override
-    public void updateCustomer(Customer customer) {
-        String query = "UPDATE customers SET name = ?, email = ? WHERE id = ?";
+    public void update(Customer customer) {
         try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_CUSTOMER)) {
             preparedStatement.setString(1, customer.getName());
-            preparedStatement.setString(2, customer.getEmail());
-            preparedStatement.setInt(3, customer.getId());
+            preparedStatement.setString(2, customer.getSchoolName());
+            preparedStatement.setString(3, customer.getAddress());
+            preparedStatement.setString(4, customer.getDob());
+            preparedStatement.setInt(5, customer.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -82,11 +84,9 @@ public class CustomerDAOImpl implements ICustomerDAO {
     }
 
     @Override
-    public void deleteCustomer(int id) {
-        String query = "DELETE FROM customers WHERE id = ?";
+    public void delete(int id) {
         try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_CUSTOMER)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {

@@ -4,53 +4,30 @@ import model.Customer;
 import service.customer.ICustomerService;
 import service.customer.CustomerServiceImpl;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+@WebServlet("/customers")
 public class CustomerController extends HttpServlet {
-    private ICustomerService customerService;
+    private ICustomerService customerService = new CustomerServiceImpl();
 
     @Override
-    public void init() throws ServletException {
-        customerService = new CustomerServiceImpl();
-    }
-
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         if (action == null) {
-            action = "list";
+            action = "";
         }
-
         switch (action) {
-            case "new":
-                showNewForm(request, response);
+            case "add":
+                showAddForm(request, response);
                 break;
             case "edit":
                 showEditForm(request, response);
-                break;
-            case "delete":
-                deleteCustomer(request, response);
-                break;
-            default:
-                listCustomers(request, response);
-                break;
-        }
-    }
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
-        if (action == null) {
-            action = "list";
-        }
-
-        switch (action) {
-            case "insert":
-                insertCustomer(request, response);
-                break;
-            case "update":
-                updateCustomer(request, response);
                 break;
             default:
                 listCustomers(request, response);
@@ -59,52 +36,67 @@ public class CustomerController extends HttpServlet {
     }
 
     private void listCustomers(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Customer> listCustomer = customerService.getAllCustomers();
-        request.setAttribute("listCustomer", listCustomer);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("customers/list.jsp");
-        dispatcher.forward(request, response);
+        List<Customer> customers = customerService.findAll();
+        request.setAttribute("customers", customers);
+        request.getRequestDispatcher("/customers/list.jsp").forward(request, response);
     }
 
-    private void showNewForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RequestDispatcher dispatcher = request.getRequestDispatcher("customers/add.jsp");
-        dispatcher.forward(request, response);
+    private void showAddForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/customers/add.jsp").forward(request, response);
     }
 
     private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        Customer existingCustomer = customerService.getCustomerById(id);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("customers/edit.jsp");
+        Customer existingCustomer = customerService.findById(id);
         request.setAttribute("customer", existingCustomer);
-        dispatcher.forward(request, response);
+        request.getRequestDispatcher("/customers/edit.jsp").forward(request, response);
     }
 
-    private void insertCustomer(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+        if (action == null) {
+            action = "";
+        }
+        switch (action) {
+            case "add":
+                addCustomer(request, response);
+                break;
+            case "edit":
+                updateCustomer(request, response);
+                break;
+            case "delete":
+                deleteCustomer(request, response);
+                break;
+        }
+    }
+
+    private void addCustomer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String name = request.getParameter("name");
-        String email = request.getParameter("email");
-        Customer newCustomer = new Customer();
-        newCustomer.setName(name);
-        newCustomer.setEmail(email);
-        customerService.addCustomer(newCustomer);
-        response.sendRedirect("list");
+        String schoolName = request.getParameter("schoolName");
+        String address = request.getParameter("address");
+        String dob = request.getParameter("dob");
+
+        Customer newCustomer = new Customer(name, schoolName, address, dob);
+        customerService.save(newCustomer);
+        response.sendRedirect("/customers");
     }
 
-    private void updateCustomer(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void updateCustomer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         String name = request.getParameter("name");
-        String email = request.getParameter("email");
+        String schoolName = request.getParameter("schoolName");
+        String address = request.getParameter("address");
+        String dob = request.getParameter("dob");
 
-        Customer customer = new Customer();
-        customer.setId(id);
-        customer.setName(name);
-        customer.setEmail(email);
-
-        customerService.updateCustomer(customer);
-        response.sendRedirect("list");
+        Customer customer = new Customer(id, name, schoolName, address, dob);
+        customerService.update(customer);
+        response.sendRedirect("/customers");
     }
 
-    private void deleteCustomer(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void deleteCustomer(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        customerService.deleteCustomer(id);
-        response.sendRedirect("list");
+        customerService.delete(id);
+        response.sendRedirect("/customers");
     }
 }
