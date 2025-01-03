@@ -64,11 +64,16 @@ public class BorrowDAOImpl implements IBorrowDAO {
     @Override
     public void save(Borrow borrow) {
         try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_BORROW)) {
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_BORROW, Statement.RETURN_GENERATED_KEYS)) {
             preparedStatement.setInt(1, borrow.getCustomerId());
             preparedStatement.setString(2, borrow.getBorrowDate());
             preparedStatement.setString(3, borrow.getReturnDate());
             preparedStatement.executeUpdate();
+
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            if (generatedKeys.next()) {
+                borrow.setId(generatedKeys.getInt(1));
+            }
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -142,5 +147,21 @@ public class BorrowDAOImpl implements IBorrowDAO {
             e.printStackTrace();
         }
         return borrowDetails;
+    }
+
+    @Override
+    public void saveBorrowDetail(BorrowDetail borrowDetail) {
+        String INSERT_BORROW_DETAIL = "INSERT INTO BorrowDetail (BorrowID, BookID, BorrowDate, ReturnDate, ReturnStatus) VALUES (?, ?, ?, ?, ?)";
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_BORROW_DETAIL)) {
+            preparedStatement.setInt(1, borrowDetail.getBorrowId());
+            preparedStatement.setInt(2, borrowDetail.getBookId());
+            preparedStatement.setString(3, borrowDetail.getBorrowDate());
+            preparedStatement.setString(4, borrowDetail.getReturnDate());
+            preparedStatement.setString(5, borrowDetail.getReturnStatus());
+            preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 }

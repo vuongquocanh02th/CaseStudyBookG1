@@ -12,4 +12,6 @@ public interface IBorrowDAO {
     void delete(int id);
     List<BorrowDetail> findDetailsByBorrowId(int borrowId);
     List<BorrowDetail> findDetailsByCustomerId(int customerId); // New method
+    void saveBorrowDetail(BorrowDetail borrowDetail); // Added method declaration
+
 }

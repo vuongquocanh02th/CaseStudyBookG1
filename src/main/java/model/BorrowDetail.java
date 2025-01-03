@@ -11,6 +11,14 @@ public class BorrowDetail {
 
     public BorrowDetail() {}
 
+    public BorrowDetail(int borrowId, int bookId, String borrowDate, String returnDate, String returnStatus) {
+        this.borrowId = borrowId;
+        this.bookId = bookId;
+        this.borrowDate = borrowDate;
+        this.returnDate = returnDate;
+        this.returnStatus = returnStatus;
+    }
+
     public BorrowDetail(int id, int borrowId, int bookId, String bookName, String borrowDate, String returnDate, String returnStatus) {
         this.id = id;
         this.borrowId = borrowId;

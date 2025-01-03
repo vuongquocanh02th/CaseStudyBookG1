@@ -14,6 +14,13 @@
             <option value="${customer.id}">${customer.name}</option>
         </c:forEach>
     </select><br>
+    <label for="bookId">Book:</label>
+    <select id="bookId" name="bookId" required>
+        <option value="">Select Book</option>
+        <c:forEach var="book" items="${books}">
+            <option value="${book.id}">${book.bookName}</option>
+        </c:forEach>
+    </select><br>
     <label for="borrowDate">Borrow Date:</label>
     <input type="date" id="borrowDate" name="borrowDate" required><br>
     <label for="returnDate">Return Date:</label>
