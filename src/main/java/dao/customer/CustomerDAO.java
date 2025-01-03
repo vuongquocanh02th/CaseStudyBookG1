@@ -1,14 +1,13 @@
-package dao;
+package dao.customer;
 
 import model.Customer;
 
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import dbconnect.DBConnection;
 
-public class CustomerDAO implements ICustomerDAO{
+public class CustomerDAO implements ICustomerDAO {
 
     private static final String SELECT_ALL_CUSTOMERS = "SELECT * FROM Customer";
     private static final String SELECT_CUSTOMER_BY_ID = "select * from customer where id = ?";
@@ -83,7 +82,7 @@ public class CustomerDAO implements ICustomerDAO{
             return statement.executeUpdate() > 0;
         }catch (SQLException e){
             e.printStackTrace();
+            return false;
         }
-        return false;
     }
 }

@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html; charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 
 <html>
@@ -6,92 +6,162 @@
     <title>Customer List</title>
     <link rel="stylesheet" href="customer.css">
     <style>
-
+        /* General styling */
         body {
-            font-family: 'Poppins', sans-serif;
-            background-color: #f4f7f6;
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
             margin: 0;
             padding: 0;
-
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            color: #333;
         }
 
-        h1 {
-            color: #333;
+        .container {
+            width: 80%;
+            margin: 50px auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
             text-align: center;
+            color: #333;
+            font-size: 28px;
             margin-bottom: 20px;
         }
 
-        table {
-            width: 90%;
+        /* Table styling */
+        .table {
+            width: 100%;
             border-collapse: collapse;
-            margin: 25px auto;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            border-radius: 8px;
-            overflow: hidden;
+            margin-top: 20px;
         }
 
-        th, td {
+        .table th, .table td {
             padding: 15px;
-            text-align: center;
+            text-align: left;
             border-bottom: 1px solid #ddd;
         }
 
-        th {
+        .table th {
             background-color: #007bff;
             color: white;
             text-transform: uppercase;
         }
 
-        tr:hover {
+        .table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .table tr:hover {
             background-color: #f1f1f1;
         }
 
-        a {
-            text-decoration: none;
+        .table td a {
             color: #007bff;
-            padding: 8px 12px;
-            border-radius: 4px;
-            transition: 0.3s;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 6px 12px;
+            border-radius: 5px;
         }
 
-        a:hover {
-            background-color: #0056b3;
+        .table td a:hover {
+            background-color: #007bff;
             color: white;
         }
 
-        table tr:last-child td {
-            border-bottom: none;
+        /* Buttons styling */
+        .table td a.edit {
+            background-color: #28a745;
+            color: white;
         }
+
+        .table td a.delete {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        .table td a.edit:hover {
+            background-color: #218838;
+        }
+
+        .table td a.delete:hover {
+            background-color: #c82333;
+        }
+
+        /* Message styling */
+        .message {
+            background-color: #d4edda;
+            color: #155724;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            text-align: center;
+            font-size: 16px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                width: 95%;
+                padding: 15px;
+            }
+
+            .table th, .table td {
+                padding: 10px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            .table td a {
+                padding: 5px 10px;
+            }
+        }
+
     </style>
 </head>
 <body>
-<h1>Customer List</h1>
-<table border="1">
-    <tr>
-        <th>ID</th>
-        <th>Name</th>
-        <th>School</th>
-        <th>Address</th>
-        <th>Date of Birth</th>
-        <th>Actions</th>
-    </tr>
-    <c:forEach var="customer" items="${customers}">
+
+<div class="container">
+    <h2>Customer List</h2>
+
+    <!-- Success or error message -->
+    <c:if test="${not empty message}">
+        <div class="message ${message eq 'Customer successfully deleted.' ? 'success' : 'error'}">
+                ${message}
+        </div>
+    </c:if>
+
+    <table class="table">
+        <thead>
         <tr>
-            <td>${customer.id}</td>
-            <td>${customer.name}</td>
-            <td>${customer.schoolName}</td>
-            <td>${customer.address}</td>
-            <td>${customer.dob}</td>
-            <td>
-                <a href="/customers?action=edit&id=${customer.id}">Edit</a>
-                <a href="/customers?action=delete&id=${customer.id}" onclick="return confirm('Are you sure?')">Delete</a>
-            </td>
+            <th>ID</th>
+            <th>Name</th>
+            <th>School</th>
+            <th>Address</th>
+            <th>Actions</th>
         </tr>
-    </c:forEach>
-</table>
+        </thead>
+        <tbody>
+        <c:forEach var="customer" items="${customers}">
+            <tr>
+                <td>${customer.id}</td>
+                <td>${customer.name}</td>
+                <td>${customer.schoolName}</td>
+                <td>${customer.address}</td>
+                <td>
+                    <a href="customers?action=edit&id=${customer.id}" class="edit">Edit</a>
+                    <a href="customers?action=delete&id=${customer.id}" class="delete">Delete</a>
+                </td>
+            </tr>
+        </c:forEach>
+        </tbody>
+    </table>
+</div>
+
 </body>
 </html>

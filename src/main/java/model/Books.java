@@ -9,8 +9,13 @@ public class Books {
     private int publisherId;
     private int categoryId;
 
+    private Genres genre;
+    private Publishers publisher;
+    private Categories category;
+
     // Constructors
-    public Books() {}
+    public Books() {
+    }
 
     public Books(int id, String bookName, String description, String status, int genId, int publisherId, int categoryId) {
         this.id = id;
@@ -20,6 +25,9 @@ public class Books {
         this.genId = genId;
         this.publisherId = publisherId;
         this.categoryId = categoryId;
+        this.genre = new Genres();
+        this.publisher = new Publishers();
+        this.category = new Categories();
     }
 
     // Getters and Setters
@@ -77,6 +85,31 @@ public class Books {
 
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
+    }
+
+
+    public Genres getGenre() {
+        return genre;
+    }
+
+    public void setGenre(Genres genre) {
+        this.genre = genre;
+    }
+
+    public Publishers getPublisher() {
+        return publisher;
+    }
+
+    public void setPublisher(Publishers publisher) {
+        this.publisher = publisher;
+    }
+
+    public Categories getCategory() {
+        return category;
+    }
+
+    public void setCategory(Categories category) {
+        this.category = category;
     }
 }
 
