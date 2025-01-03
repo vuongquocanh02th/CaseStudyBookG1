@@ -1,37 +1,35 @@
 package dao.customer;
 
+import dbconnect.DBConnection;
 import model.Customer;
+import dbconnect.DBConnection;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import dbconnect.DBConnection;
 
 public class CustomerDAO implements ICustomerDAO {
-
-    private static final String SELECT_ALL_CUSTOMERS = "SELECT * FROM Customer";
-    private static final String SELECT_CUSTOMER_BY_ID = "select * from customer where id = ?";
-    private static final String UPDATE_CUSTOMER = "UPDATE Customer SET name = ?, schoolName = ?, address = ?, dob = ? WHERE id = ?";
-    private static final String DELETE_CUSTOMER = "DELETE FROM Customer WHERE ID = ?";
-
+    private dbconnect.DBConnection DBConnection;
+    private Connection connection = DBConnection.getConnection();
 
     @Override
     public List<Customer> getAllCustomers() {
         List<Customer> customers = new ArrayList<>();
-        try(Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(SELECT_ALL_CUSTOMERS);){
-            ResultSet resultSet = statement.executeQuery();
-            while(resultSet.next()) {
+        String query = "SELECT * FROM Customer";
+
+        try (PreparedStatement ps = connection.prepareStatement(query);
+             ResultSet rs = ps.executeQuery()) {
+            while (rs.next()) {
                 Customer customer = new Customer(
-                        resultSet.getInt("ID"),
-                        resultSet.getString("Name"),
-                        resultSet.getString("SchoolName"),
-                        resultSet.getString("Address"),
-                        resultSet.getDate("DOB")
+                        rs.getInt("ID"),
+                        rs.getString("Name"),
+                        rs.getString("SchoolName"),
+                        rs.getString("Address"),
+                        rs.getString("DOB")
                 );
                 customers.add(customer);
             }
-        }catch (SQLException e) {
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return customers;
@@ -40,49 +38,67 @@ public class CustomerDAO implements ICustomerDAO {
     @Override
     public Customer getCustomerById(int id) {
         Customer customer = null;
-        try(Connection connection = DBConnection.getConnection();
-        PreparedStatement statement = connection.prepareStatement(SELECT_CUSTOMER_BY_ID);){
-            statement.setInt(1, id);
-            ResultSet resultSet = statement.executeQuery();
-            if(resultSet.next()) {
-                customer = new Customer(
-                        resultSet.getInt("ID"),
-                        resultSet.getString("Name"),
-                        resultSet.getString("SchoolName"),
-                        resultSet.getString("Address"),
-                        resultSet.getDate("DOB")
-                );
+        String query = "SELECT * FROM Customer WHERE ID = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, id);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    customer = new Customer(
+                            rs.getInt("ID"),
+                            rs.getString("Name"),
+                            rs.getString("SchoolName"),
+                            rs.getString("Address"),
+                            rs.getString("DOB")
+                    );
+                }
             }
-        }catch (SQLException e){
+        } catch (SQLException e) {
             e.printStackTrace();
         }
         return customer;
     }
 
     @Override
-    public boolean updateCustomer(Customer customer) {
-        try(Connection connection = DBConnection.getConnection();
-        PreparedStatement statement = connection.prepareStatement(UPDATE_CUSTOMER)) {
-            statement.setString(1, customer.getName());
-            statement.setString(2, customer.getSchoolName());
-            statement.setString(3, customer.getAddress());
-            statement.setDate(4, new java.sql.Date(customer.getDob().getTime()));
-            statement.setInt(5, customer.getId());
-            return statement.executeUpdate() > 0;
-        }catch (SQLException e) {
-            throw new RuntimeException("Error updating customer with ID: " + customer.getId(), e);
+    public void addCustomer(Customer customer) {
+        String query = "INSERT INTO Customer (Name, SchoolName, Address, DOB) VALUES (?, ?, ?, ?)";
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, customer.getName());
+            ps.setString(2, customer.getSchoolName());
+            ps.setString(3, customer.getAddress());
+            ps.setString(4, customer.getDob());
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 
     @Override
-    public boolean deleteCustomer(int id) {
-        try(Connection connection = DBConnection.getConnection();
-        PreparedStatement statement = connection.prepareStatement(DELETE_CUSTOMER);) {
-            statement.setInt(1, id);
-            return statement.executeUpdate() > 0;
-        }catch (SQLException e){
+    public void updateCustomer(Customer customer) {
+        String query = "UPDATE Customer SET Name = ?, SchoolName = ?, Address = ?, DOB = ? WHERE ID = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, customer.getName());
+            ps.setString(2, customer.getSchoolName());
+            ps.setString(3, customer.getAddress());
+            ps.setString(4, customer.getDob());
+            ps.setInt(5, customer.getId());
+            ps.executeUpdate();
+        } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+        }
+    }
+
+    @Override
+    public void deleteCustomer(int id) {
+        String query = "DELETE FROM Customer WHERE ID = ?";
+
+        try (PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setInt(1, id);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
     }
 }

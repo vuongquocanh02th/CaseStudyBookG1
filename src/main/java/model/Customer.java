@@ -1,18 +1,23 @@
 package model;
 
-import java.util.Date;
-
 public class Customer {
     private int id;
     private String name;
     private String schoolName;
     private String address;
-    private Date dob;
+    private String dob;
 
-    // Constructors
-    public Customer() {}
+    public Customer() {
+    }
 
-    public Customer(int id, String name, String schoolName, String address, Date dob) {
+    public Customer(String name, String schoolName, String address, String dob) {
+        this.name = name;
+        this.schoolName = schoolName;
+        this.address = address;
+        this.dob = dob;
+    }
+
+    public Customer(int id, String name, String schoolName, String address, String dob) {
         this.id = id;
         this.name = name;
         this.schoolName = schoolName;
@@ -20,7 +25,6 @@ public class Customer {
         this.dob = dob;
     }
 
-    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -53,11 +57,11 @@ public class Customer {
         this.address = address;
     }
 
-    public Date getDob() {
+    public String getDob() {
         return dob;
     }
 
-    public void setDob(Date dob) {
+    public void setDob(String dob) {
         this.dob = dob;
     }
 }

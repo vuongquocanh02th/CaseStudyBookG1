@@ -64,3 +64,48 @@ CREATE TABLE BorrowDetail (
                               FOREIGN KEY (BorrowID) REFERENCES Borrow(ID),
                               FOREIGN KEY (BookID) REFERENCES Books(ID)
 );
+
+insert into Customer(Name, SchoolName, Address, DOB) values
+                                                         ('Nguyen Van E', 'THPT ZZZ','YY','1990-09-09'),
+                                                         ('Nguyen Van F', 'THPT ZZZ','YY','1990-09-09'),
+                                                         ('Nguyen Van C', 'THPT ZZZ','YY','1990-09-09'),
+                                                         ('Nguyen Van D', 'THPT YZY','YY','1990-09-09'),
+                                                         ('Nguyen Van B', 'THPT YYY','YY','1990-09-09'),
+                                                         ('Nguyen Van A', 'THPT XXX','YY','1999-09-09'),
+                                                         ('Vuong Quoc Anh', 'THPT Tung Thien','Son Tay','2002-04-30');
+
+insert into Genres(name) values
+                             ('Kinh di'),
+                             ('Trinh tham'),
+                             ('Tinh cam'),
+                             ('Hai huoc'),
+                             ('Tam ly');
+
+insert into Publishers(name) values
+                                 ('Pub 1'),
+                                 ('Pub 2'),
+                                 ('Pub 3'),
+                                 ('Pub 4'),
+                                 ('Pub 5');
+
+insert into Categories(name) values
+                                 ('Truyen ngan'),
+                                 ('Truyen dai'),
+                                 ('Truyen tranh'),
+                                 ('Truyen nguoc'),
+                                 ('Truyen tap');
+
+insert into Books(BookName, Description, Status, GenID, PublisherID, CategoryID)
+values
+    ('Dao kinh di','No des','Available',1,1,1),
+    ('Ghost House','No des','Available',1,1,1),
+    ('Killer Virginia','No des','Available',1,1,1),
+    ('Hilliker','No des','Available',1,1,1),
+    ('Execute','No des','Available',1,1,1);
+
+SELECT b.ID, b.BookName, b.Description, b.Status, g.Name AS GenreName,
+       p.Name AS PublisherName, c.Name AS CategoryName
+FROM Books b
+         JOIN Genres g ON b.GenID = g.ID
+         JOIN Publishers p ON b.PublisherID = p.PublisherID
+         JOIN Categories c ON b.CategoryID = c.CategoryID;

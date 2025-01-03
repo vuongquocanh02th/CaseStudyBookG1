@@ -9,105 +9,95 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.sql.Date;
+import java.util.List;
 
-@WebServlet("/customers")
+@WebServlet(name = "CustomerController", urlPatterns = {"/customers"})
 public class CustomerController extends HttpServlet {
-    private CustomerDAO customerDAO;
-
-    public void init() {
-        customerDAO = new CustomerDAO();
-    }
+    private CustomerDAO customerDAO = new CustomerDAO();
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String action = req.getParameter("action");
-        if ("edit".equals(action)) {
-            try {
-                int id = Integer.parseInt(req.getParameter("id"));
-                Customer existingCustomer = customerDAO.getCustomerById(id);
-                if (existingCustomer != null) {
-                    req.setAttribute("customer", existingCustomer);
-                    req.getRequestDispatcher("customer/editCustomer.jsp").forward(req, resp);
-                } else {
-                    req.setAttribute("errorMessage", "Customer not found.");
-                    req.getRequestDispatcher("error.jsp").forward(req, resp);
-                }
-            } catch (NumberFormatException e) {
-                req.setAttribute("errorMessage", "Invalid customer ID format.");
-                req.getRequestDispatcher("error.jsp").forward(req, resp);
-            }
-        } else if ("delete".equals(action)) {
-            try {
-                int id = Integer.parseInt(req.getParameter("id"));
-                Customer customer = customerDAO.getCustomerById(id);
-                if (customer != null) {
-                    req.setAttribute("customer", customer);
-                    req.getRequestDispatcher("customer/deleteCustomer.jsp").forward(req, resp);
-                } else {
-                    req.setAttribute("errorMessage", "Customer not found.");
-                    req.getRequestDispatcher("error.jsp").forward(req, resp);
-                }
-            } catch (NumberFormatException e) {
-                req.setAttribute("errorMessage", "Invalid customer ID format.");
-                req.getRequestDispatcher("error.jsp").forward(req, resp);
-            }
-        } else {
-            req.setAttribute("customers", customerDAO.getAllCustomers());
-            req.getRequestDispatcher("customer/customer.jsp").forward(req, resp);
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+        if (action == null) {
+            action = "list";
+        }
+
+        switch (action) {
+            case "add":
+                showAddForm(request, response);
+                break;
+            case "edit":
+                showEditForm(request, response);
+                break;
+            case "delete":
+                deleteCustomer(request, response);
+                break;
+            default:
+                listCustomers(request, response);
+                break;
         }
     }
 
+    private void listCustomers(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Customer> customers = customerDAO.getAllCustomers();
+        request.setAttribute("customers", customers);
+        request.getRequestDispatcher("/customers/list.jsp").forward(request, response);
+    }
+
+    private void showAddForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/customers/add.jsp").forward(request, response);
+    }
+
+    private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        Customer customer = customerDAO.getCustomerById(id);
+        request.setAttribute("customer", customer);
+        request.getRequestDispatcher("/customers/edit.jsp").forward(request, response);
+    }
+
+    private void deleteCustomer(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        customerDAO.deleteCustomer(id);
+        response.sendRedirect("/customers");
+    }
+
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String action = req.getParameter("action");
-        if ("edit".equals(action)) {
-            try {
-                int id = Integer.parseInt(req.getParameter("id"));
-                String name = req.getParameter("name");
-                String schoolName = req.getParameter("schoolName");
-                String address = req.getParameter("address");
-                Date dob = Date.valueOf(req.getParameter("dob"));
-
-                Customer customer = new Customer(id, name, schoolName, address, dob);
-                boolean success = customerDAO.updateCustomer(customer);
-
-                // Set success or failure message
-                if (success) {
-                    req.setAttribute("message", "Customer successfully updated!");
-                } else {
-                    req.setAttribute("message", "Customer update failed! Try Again!");
-                }
-
-                // Forward back to the edit page with the success message
-                req.setAttribute("customer", customer); // Send the updated customer back to the page
-                req.getRequestDispatcher("customer/editCustomer.jsp").forward(req, resp);
-            } catch (Exception e) {
-                req.setAttribute("errorMessage", "An error occurred while processing the request.");
-                req.getRequestDispatcher("error.jsp").forward(req, resp);
-            }
-        } else if ("delete".equals(action)) {
-            try {
-                int id = Integer.parseInt(req.getParameter("id"));
-                boolean success = customerDAO.deleteCustomer(id);
-
-                // Thiết lập thông báo sau khi xóa
-                if (success) {
-                    req.setAttribute("message", "Customer successfully deleted.");
-                } else {
-                    req.setAttribute("message", "Customer deletion failed. Try again.");
-                }
-
-                // Chuyển hướng lại trang danh sách khách hàng
-                req.setAttribute("customers", customerDAO.getAllCustomers());
-                req.getRequestDispatcher("customer/customer.jsp").forward(req, resp);  // Redirect to customer list
-            } catch (NumberFormatException e) {
-                req.setAttribute("errorMessage", "Invalid customer ID format.");
-                req.getRequestDispatcher("error.jsp").forward(req, resp);
-            } catch (Exception e) {
-                req.setAttribute("errorMessage", "An error occurred while deleting the customer.");
-                req.getRequestDispatcher("error.jsp").forward(req, resp);
-            }
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+        if (action == null) {
+            action = "add";
         }
+
+        switch (action) {
+            case "add":
+                addCustomer(request, response);
+                break;
+            case "edit":
+                updateCustomer(request, response);
+                break;
+        }
+    }
+
+    private void addCustomer(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        String name = request.getParameter("name");
+        String schoolName = request.getParameter("schoolName");
+        String address = request.getParameter("address");
+        String dob = request.getParameter("dob");
+
+        Customer customer = new Customer(name, schoolName, address, dob);
+        customerDAO.addCustomer(customer);
+        response.sendRedirect("/customers");
+    }
+
+    private void updateCustomer(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        String name = request.getParameter("name");
+        String schoolName = request.getParameter("schoolName");
+        String address = request.getParameter("address");
+        String dob = request.getParameter("dob");
+
+        Customer customer = new Customer(id, name, schoolName, address, dob);
+        customerDAO.updateCustomer(customer);
+        response.sendRedirect("/customers");
     }
 }
