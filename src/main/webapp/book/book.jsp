@@ -1,4 +1,6 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+         pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -105,8 +107,20 @@
     </style>
 </head>
 <body>
+
 <div class="container">
     <h2>Book List</h2>
+    <div style="text-align: right; margin-bottom: 20px;">
+        <a href="books?action=addBook" class="btn btn-primary" style="
+            background-color: #27ae60;
+            padding: 10px 20px;
+            text-decoration: none;
+            border-radius: 5px;
+            color: white;
+            font-size: 1rem;">
+            + Add New Book
+        </a>
+    </div>
     <table>
         <thead>
         <tr>
@@ -123,13 +137,13 @@
         <tbody>
         <c:forEach var="book" items="${books}">
             <tr>
-                <td>${book.id}</td>
-                <td>${book.bookName}</td>
-                <td>${book.description}</td>
-                <td>${book.status}</td>
-                <td>${book.genre.name}</td>
-                <td>${book.publisher.name}</td>
-                <td>${book.category.name}</td>
+                <td>${book.getId()}</td>
+                <td>${book.getBookName()}</td>
+                <td>${book.getDescription()}</td>
+                <td>${book.getStatus()}</td>
+                <td>${book.getGenre().getName()}</td>
+                <td>${book.getPublisher().getName()}</td>
+                <td>${book.getCategory().getName()}</td>
                 <td class="action-buttons">
                     <a href="#">Edit</a>
                     <a href="#">Delete</a>
