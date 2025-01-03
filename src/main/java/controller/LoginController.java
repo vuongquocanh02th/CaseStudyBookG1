@@ -5,9 +5,11 @@ import service.login.ILoginService;
 import service.login.LoginServiceImpl;
 
 import javax.servlet.*;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 
+@WebServlet(name = "login", urlPatterns = {"/login"})
 public class LoginController extends HttpServlet {
     private ILoginService loginService;
 

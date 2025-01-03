@@ -4,9 +4,9 @@ import model.Book;
 import java.util.List;
 
 public interface IBookService {
-    List<Book> getAllBooks();
-    Book getBookById(int id);
-    void addBook(Book book);
-    void updateBook(Book book);
-    void deleteBook(int id);
+    List<Book> findAll();
+    Book findById(int id);
+    void save(Book book);
+    void update(Book book);
+    void delete(int id);
 }
