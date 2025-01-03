@@ -39,4 +39,9 @@ public class BorrowServiceImpl implements IBorrowService {
     public List<BorrowDetail> findDetailsByBorrowId(int borrowId) {
         return borrowDAO.findDetailsByBorrowId(borrowId);
     }
+
+    @Override
+    public List<BorrowDetail> findDetailsByCustomerId(int customerId) {
+        return borrowDAO.findDetailsByCustomerId(customerId);
+    }
 }

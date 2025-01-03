@@ -9,12 +9,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BorrowDAOImpl implements IBorrowDAO {
-    private static final String SELECT_ALL_BORROWS = "SELECT * FROM Borrow";
-    private static final String SELECT_BORROW_BY_ID = "SELECT * FROM Borrow WHERE ID = ?";
+    private static final String SELECT_ALL_BORROWS = "SELECT b.ID, b.CustomerID, c.Name AS CustomerName, b.BorrowDate, b.ReturnDate FROM Borrow b JOIN Customer c ON b.CustomerID = c.ID";
+    private static final String SELECT_BORROW_BY_ID = "SELECT b.ID, b.CustomerID, c.Name AS CustomerName, b.BorrowDate, b.ReturnDate FROM Borrow b JOIN Customer c ON b.CustomerID = c.ID WHERE b.ID = ?";
     private static final String INSERT_BORROW = "INSERT INTO Borrow (CustomerID, BorrowDate, ReturnDate) VALUES (?, ?, ?)";
     private static final String UPDATE_BORROW = "UPDATE Borrow SET CustomerID = ?, BorrowDate = ?, ReturnDate = ? WHERE ID = ?";
     private static final String DELETE_BORROW = "DELETE FROM Borrow WHERE ID = ?";
-    private static final String SELECT_BORROW_DETAILS_BY_BORROW_ID = "SELECT * FROM BorrowDetail WHERE BorrowID = ?";
+    private static final String SELECT_BORROW_DETAILS_BY_BORROW_ID = "SELECT bd.ID, bd.BorrowID, bd.BookID, bk.BookName, bd.BorrowDate, bd.ReturnDate, bd.ReturnStatus FROM BorrowDetail bd JOIN Books bk ON bd.BookID = bk.ID WHERE bd.BorrowID = ?";
+    private static final String SELECT_BORROW_DETAILS_BY_CUSTOMER_ID = "SELECT bd.ID, bd.BorrowID, bd.BookID, bk.BookName, bd.BorrowDate, bd.ReturnDate, bd.ReturnStatus " +
+            "FROM BorrowDetail bd " +
+            "JOIN Books bk ON bd.BookID = bk.ID " +
+            "JOIN Borrow b ON bd.BorrowID = b.ID " +
+            "WHERE b.CustomerID = ?";
 
     @Override
     public List<Borrow> findAll() {
@@ -25,9 +30,10 @@ public class BorrowDAOImpl implements IBorrowDAO {
             while (rs.next()) {
                 int id = rs.getInt("ID");
                 int customerId = rs.getInt("CustomerID");
+                String customerName = rs.getString("CustomerName");
                 String borrowDate = rs.getString("BorrowDate");
                 String returnDate = rs.getString("ReturnDate");
-                borrows.add(new Borrow(id, customerId, borrowDate, returnDate));
+                borrows.add(new Borrow(id, customerId, customerName, borrowDate, returnDate));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -44,9 +50,10 @@ public class BorrowDAOImpl implements IBorrowDAO {
             ResultSet rs = preparedStatement.executeQuery();
             if (rs.next()) {
                 int customerId = rs.getInt("CustomerID");
+                String customerName = rs.getString("CustomerName");
                 String borrowDate = rs.getString("BorrowDate");
                 String returnDate = rs.getString("ReturnDate");
-                borrow = new Borrow(id, customerId, borrowDate, returnDate);
+                borrow = new Borrow(id, customerId, customerName, borrowDate, returnDate);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -102,10 +109,34 @@ public class BorrowDAOImpl implements IBorrowDAO {
             while (rs.next()) {
                 int id = rs.getInt("ID");
                 int bookId = rs.getInt("BookID");
+                String bookName = rs.getString("BookName");
                 String borrowDate = rs.getString("BorrowDate");
                 String returnDate = rs.getString("ReturnDate");
                 String returnStatus = rs.getString("ReturnStatus");
-                borrowDetails.add(new BorrowDetail(id, borrowId, bookId, borrowDate, returnDate, returnStatus));
+                borrowDetails.add(new BorrowDetail(id, borrowId, bookId, bookName, borrowDate, returnDate, returnStatus));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return borrowDetails;
+    }
+
+    @Override
+    public List<BorrowDetail> findDetailsByCustomerId(int customerId) {
+        List<BorrowDetail> borrowDetails = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BORROW_DETAILS_BY_CUSTOMER_ID)) {
+            preparedStatement.setInt(1, customerId);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                int borrowId = rs.getInt("BorrowID");
+                int bookId = rs.getInt("BookID");
+                String bookName = rs.getString("BookName");
+                String borrowDate = rs.getString("BorrowDate");
+                String returnDate = rs.getString("ReturnDate");
+                String returnStatus = rs.getString("ReturnStatus");
+                borrowDetails.add(new BorrowDetail(id, borrowId, bookId, bookName, borrowDate, returnDate, returnStatus));
             }
         } catch (SQLException e) {
             e.printStackTrace();

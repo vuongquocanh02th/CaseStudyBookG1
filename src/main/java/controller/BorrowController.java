@@ -2,8 +2,11 @@ package controller;
 
 import model.Borrow;
 import model.BorrowDetail;
+import model.Customer;
 import service.borrow.IBorrowService;
 import service.borrow.BorrowServiceImpl;
+import service.customer.ICustomerService;
+import service.customer.CustomerServiceImpl;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,6 +19,7 @@ import java.util.List;
 @WebServlet("/borrows")
 public class BorrowController extends HttpServlet {
     private IBorrowService borrowService = new BorrowServiceImpl();
+    private ICustomerService customerService = new CustomerServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -43,6 +47,8 @@ public class BorrowController extends HttpServlet {
     }
 
     private void showAddForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        List<Customer> customers = customerService.findAll();
+        request.setAttribute("customers", customers);
         request.getRequestDispatcher("/borrows/add.jsp").forward(request, response);
     }
 

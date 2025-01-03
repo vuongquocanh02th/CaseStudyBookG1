@@ -3,6 +3,7 @@ package model;
 public class Borrow {
     private int id;
     private int customerId;
+    private String customerName;
     private String borrowDate;
     private String returnDate;
 
@@ -14,9 +15,10 @@ public class Borrow {
         this.returnDate = returnDate;
     }
 
-    public Borrow(int id, int customerId, String borrowDate, String returnDate) {
+    public Borrow(int id, int customerId, String customerName, String borrowDate, String returnDate) {
         this.id = id;
         this.customerId = customerId;
+        this.customerName = customerName;
         this.borrowDate = borrowDate;
         this.returnDate = returnDate;
     }
@@ -37,6 +39,14 @@ public class Borrow {
 
     public void setCustomerId(int customerId) {
         this.customerId = customerId;
+    }
+
+    public String getCustomerName() {
+        return customerName;
+    }
+
+    public void setCustomerName(String customerName) {
+        this.customerName = customerName;
     }
 
     public String getBorrowDate() {

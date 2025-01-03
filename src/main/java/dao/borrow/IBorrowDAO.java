@@ -11,4 +11,5 @@ public interface IBorrowDAO {
     void update(Borrow borrow);
     void delete(int id);
     List<BorrowDetail> findDetailsByBorrowId(int borrowId);
+    List<BorrowDetail> findDetailsByCustomerId(int customerId); // New method
 }
