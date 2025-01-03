@@ -3,33 +3,40 @@ package service.borrow;
 import dao.borrow.IBorrowDAO;
 import dao.borrow.BorrowDAOImpl;
 import model.Borrow;
+import model.BorrowDetail;
+
 import java.util.List;
 
 public class BorrowServiceImpl implements IBorrowService {
     private IBorrowDAO borrowDAO = new BorrowDAOImpl();
 
     @Override
-    public List<Borrow> getAllBorrows() {
-        return borrowDAO.getAllBorrows();
+    public List<Borrow> findAll() {
+        return borrowDAO.findAll();
     }
 
     @Override
-    public Borrow getBorrowById(int id) {
-        return borrowDAO.getBorrowById(id);
+    public Borrow findById(int id) {
+        return borrowDAO.findById(id);
     }
 
     @Override
-    public void addBorrow(Borrow borrow) {
-        borrowDAO.addBorrow(borrow);
+    public void save(Borrow borrow) {
+        borrowDAO.save(borrow);
     }
 
     @Override
-    public void updateBorrow(Borrow borrow) {
-        borrowDAO.updateBorrow(borrow);
+    public void update(Borrow borrow) {
+        borrowDAO.update(borrow);
     }
 
     @Override
-    public void deleteBorrow(int id) {
-        borrowDAO.deleteBorrow(id);
+    public void delete(int id) {
+        borrowDAO.delete(id);
+    }
+
+    @Override
+    public List<BorrowDetail> findDetailsByBorrowId(int borrowId) {
+        return borrowDAO.findDetailsByBorrowId(borrowId);
     }
 }

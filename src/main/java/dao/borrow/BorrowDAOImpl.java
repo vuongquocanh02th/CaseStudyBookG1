@@ -1,6 +1,7 @@
 package dao.borrow;
 
 import model.Borrow;
+import model.BorrowDetail;
 import utils.DBConnection;
 
 import java.sql.*;
@@ -8,22 +9,25 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BorrowDAOImpl implements IBorrowDAO {
+    private static final String SELECT_ALL_BORROWS = "SELECT * FROM Borrow";
+    private static final String SELECT_BORROW_BY_ID = "SELECT * FROM Borrow WHERE ID = ?";
+    private static final String INSERT_BORROW = "INSERT INTO Borrow (CustomerID, BorrowDate, ReturnDate) VALUES (?, ?, ?)";
+    private static final String UPDATE_BORROW = "UPDATE Borrow SET CustomerID = ?, BorrowDate = ?, ReturnDate = ? WHERE ID = ?";
+    private static final String DELETE_BORROW = "DELETE FROM Borrow WHERE ID = ?";
+    private static final String SELECT_BORROW_DETAILS_BY_BORROW_ID = "SELECT * FROM BorrowDetail WHERE BorrowID = ?";
 
     @Override
-    public List<Borrow> getAllBorrows() {
+    public List<Borrow> findAll() {
         List<Borrow> borrows = new ArrayList<>();
-        String query = "SELECT * FROM borrows";
         try (Connection connection = DBConnection.getConnection();
-             Statement statement = connection.createStatement();
-             ResultSet resultSet = statement.executeQuery(query)) {
-
-            while (resultSet.next()) {
-                Borrow borrow = new Borrow();
-                borrow.setId(resultSet.getInt("id"));
-                borrow.setCustomerId(resultSet.getInt("customer_id"));
-                borrow.setBookId(resultSet.getInt("book_id"));
-                borrow.setBorrowDate(resultSet.getString("borrow_date"));
-                borrows.add(borrow);
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_ALL_BORROWS)) {
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                int customerId = rs.getInt("CustomerID");
+                String borrowDate = rs.getString("BorrowDate");
+                String returnDate = rs.getString("ReturnDate");
+                borrows.add(new Borrow(id, customerId, borrowDate, returnDate));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -32,21 +36,17 @@ public class BorrowDAOImpl implements IBorrowDAO {
     }
 
     @Override
-    public Borrow getBorrowById(int id) {
+    public Borrow findById(int id) {
         Borrow borrow = null;
-        String query = "SELECT * FROM borrows WHERE id = ?";
         try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BORROW_BY_ID)) {
             preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-
-            if (resultSet.next()) {
-                borrow = new Borrow();
-                borrow.setId(resultSet.getInt("id"));
-                borrow.setCustomerId(resultSet.getInt("customer_id"));
-                borrow.setBookId(resultSet.getInt("book_id"));
-                borrow.setBorrowDate(resultSet.getString("borrow_date"));
+            ResultSet rs = preparedStatement.executeQuery();
+            if (rs.next()) {
+                int customerId = rs.getInt("CustomerID");
+                String borrowDate = rs.getString("BorrowDate");
+                String returnDate = rs.getString("ReturnDate");
+                borrow = new Borrow(id, customerId, borrowDate, returnDate);
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -55,14 +55,12 @@ public class BorrowDAOImpl implements IBorrowDAO {
     }
 
     @Override
-    public void addBorrow(Borrow borrow) {
-        String query = "INSERT INTO borrows (customer_id, book_id, borrow_date) VALUES (?, ?, ?)";
+    public void save(Borrow borrow) {
         try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
+             PreparedStatement preparedStatement = connection.prepareStatement(INSERT_BORROW)) {
             preparedStatement.setInt(1, borrow.getCustomerId());
-            preparedStatement.setInt(2, borrow.getBookId());
-            preparedStatement.setString(3, borrow.getBorrowDate());
+            preparedStatement.setString(2, borrow.getBorrowDate());
+            preparedStatement.setString(3, borrow.getReturnDate());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -70,14 +68,12 @@ public class BorrowDAOImpl implements IBorrowDAO {
     }
 
     @Override
-    public void updateBorrow(Borrow borrow) {
-        String query = "UPDATE borrows SET customer_id = ?, book_id = ?, borrow_date = ? WHERE id = ?";
+    public void update(Borrow borrow) {
         try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
+             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_BORROW)) {
             preparedStatement.setInt(1, borrow.getCustomerId());
-            preparedStatement.setInt(2, borrow.getBookId());
-            preparedStatement.setString(3, borrow.getBorrowDate());
+            preparedStatement.setString(2, borrow.getBorrowDate());
+            preparedStatement.setString(3, borrow.getReturnDate());
             preparedStatement.setInt(4, borrow.getId());
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
@@ -86,15 +82,34 @@ public class BorrowDAOImpl implements IBorrowDAO {
     }
 
     @Override
-    public void deleteBorrow(int id) {
-        String query = "DELETE FROM borrows WHERE id = ?";
+    public void delete(int id) {
         try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
-
+             PreparedStatement preparedStatement = connection.prepareStatement(DELETE_BORROW)) {
             preparedStatement.setInt(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public List<BorrowDetail> findDetailsByBorrowId(int borrowId) {
+        List<BorrowDetail> borrowDetails = new ArrayList<>();
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(SELECT_BORROW_DETAILS_BY_BORROW_ID)) {
+            preparedStatement.setInt(1, borrowId);
+            ResultSet rs = preparedStatement.executeQuery();
+            while (rs.next()) {
+                int id = rs.getInt("ID");
+                int bookId = rs.getInt("BookID");
+                String borrowDate = rs.getString("BorrowDate");
+                String returnDate = rs.getString("ReturnDate");
+                String returnStatus = rs.getString("ReturnStatus");
+                borrowDetails.add(new BorrowDetail(id, borrowId, bookId, borrowDate, returnDate, returnStatus));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return borrowDetails;
     }
 }

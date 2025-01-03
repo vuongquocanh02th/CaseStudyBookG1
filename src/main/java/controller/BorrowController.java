@@ -1,56 +1,34 @@
 package controller;
 
 import model.Borrow;
+import model.BorrowDetail;
 import service.borrow.IBorrowService;
 import service.borrow.BorrowServiceImpl;
 
-import javax.servlet.*;
-import javax.servlet.http.*;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
+@WebServlet("/borrows")
 public class BorrowController extends HttpServlet {
-    private IBorrowService borrowService;
+    private IBorrowService borrowService = new BorrowServiceImpl();
 
     @Override
-    public void init() throws ServletException {
-        borrowService = new BorrowServiceImpl();
-    }
-
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
         if (action == null) {
-            action = "list";
+            action = "";
         }
-
         switch (action) {
-            case "new":
-                showNewForm(request, response);
+            case "add":
+                showAddForm(request, response);
                 break;
-            case "edit":
-                showEditForm(request, response);
-                break;
-            case "delete":
-                deleteBorrow(request, response);
-                break;
-            default:
-                listBorrows(request, response);
-                break;
-        }
-    }
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        String action = request.getParameter("action");
-        if (action == null) {
-            action = "list";
-        }
-
-        switch (action) {
-            case "insert":
-                insertBorrow(request, response);
-                break;
-            case "update":
-                updateBorrow(request, response);
+            case "details":
+                showBorrowDetails(request, response);
                 break;
             default:
                 listBorrows(request, response);
@@ -59,56 +37,51 @@ public class BorrowController extends HttpServlet {
     }
 
     private void listBorrows(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Borrow> listBorrow = borrowService.getAllBorrows();
-        request.setAttribute("listBorrow", listBorrow);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("borrows/list.jsp");
-        dispatcher.forward(request, response);
+        List<Borrow> borrows = borrowService.findAll();
+        request.setAttribute("borrows", borrows);
+        request.getRequestDispatcher("/borrows/list.jsp").forward(request, response);
     }
 
-    private void showNewForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        RequestDispatcher dispatcher = request.getRequestDispatcher("borrows/add.jsp");
-        dispatcher.forward(request, response);
+    private void showAddForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.getRequestDispatcher("/borrows/add.jsp").forward(request, response);
     }
 
-    private void showEditForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void showBorrowDetails(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        Borrow existingBorrow = borrowService.getBorrowById(id);
-        RequestDispatcher dispatcher = request.getRequestDispatcher("borrows/edit.jsp");
-        request.setAttribute("borrow", existingBorrow);
-        dispatcher.forward(request, response);
+        List<BorrowDetail> borrowDetails = borrowService.findDetailsByBorrowId(id);
+        request.setAttribute("borrowDetails", borrowDetails);
+        request.getRequestDispatcher("/borrows/details.jsp").forward(request, response);
     }
 
-    private void insertBorrow(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int customerId = Integer.parseInt(request.getParameter("customer_id"));
-        int bookId = Integer.parseInt(request.getParameter("book_id"));
-        String borrowDate = request.getParameter("borrow_date");
-        Borrow newBorrow = new Borrow();
-        newBorrow.setCustomerId(customerId);
-        newBorrow.setBookId(bookId);
-        newBorrow.setBorrowDate(borrowDate);
-        borrowService.addBorrow(newBorrow);
-        response.sendRedirect("list");
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String action = request.getParameter("action");
+        if (action == null) {
+            action = "";
+        }
+        switch (action) {
+            case "add":
+                addBorrow(request, response);
+                break;
+            case "delete":
+                deleteBorrow(request, response);
+                break;
+        }
     }
 
-    private void updateBorrow(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void addBorrow(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int customerId = Integer.parseInt(request.getParameter("customerId"));
+        String borrowDate = request.getParameter("borrowDate");
+        String returnDate = request.getParameter("returnDate");
+
+        Borrow newBorrow = new Borrow(customerId, borrowDate, returnDate);
+        borrowService.save(newBorrow);
+        response.sendRedirect("/borrows");
+    }
+
+    private void deleteBorrow(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        int customerId = Integer.parseInt(request.getParameter("customer_id"));
-        int bookId = Integer.parseInt(request.getParameter("book_id"));
-        String borrowDate = request.getParameter("borrow_date");
-
-        Borrow borrow = new Borrow();
-        borrow.setId(id);
-        borrow.setCustomerId(customerId);
-        borrow.setBookId(bookId);
-        borrow.setBorrowDate(borrowDate);
-
-        borrowService.updateBorrow(borrow);
-        response.sendRedirect("list");
-    }
-
-    private void deleteBorrow(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        int id = Integer.parseInt(request.getParameter("id"));
-        borrowService.deleteBorrow(id);
-        response.sendRedirect("list");
+        borrowService.delete(id);
+        response.sendRedirect("/borrows");
     }
 }

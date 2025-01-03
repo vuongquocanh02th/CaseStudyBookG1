@@ -1,32 +1,36 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
-<!DOCTYPE html>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <html>
 <head>
     <title>Borrow List</title>
 </head>
 <body>
-    <h1>Borrow List</h1>
-    <table border="1">
+<h1>Borrow List</h1>
+<a href="borrows?action=add">Add New Borrow</a>
+<table border="1">
+    <tr>
+        <th>ID</th>
+        <th>Customer ID</th>
+        <th>Borrow Date</th>
+        <th>Return Date</th>
+        <th>Actions</th>
+    </tr>
+    <c:forEach var="borrow" items="${borrows}">
         <tr>
-            <th>ID</th>
-            <th>Customer ID</th>
-            <th>Book ID</th>
-            <th>Borrow Date</th>
-            <th>Actions</th>
+            <td>${borrow.id}</td>
+            <td>${borrow.customerId}</td>
+            <td>${borrow.borrowDate}</td>
+            <td>${borrow.returnDate}</td>
+            <td>
+                <a href="borrows?action=details&id=${borrow.id}">Details</a>
+                <form action="borrows" method="post" style="display:inline;">
+                    <input type="hidden" name="action" value="delete">
+                    <input type="hidden" name="id" value="${borrow.id}">
+                    <button type="submit" onclick="return confirm('Are you sure?')">Delete</button>
+                </form>
+            </td>
         </tr>
-        <c:forEach var="borrow" items="${listBorrow}">
-            <tr>
-                <td>${borrow.id}</td>
-                <td>${borrow.customerId}</td>
-                <td>${borrow.bookId}</td>
-                <td>${borrow.borrowDate}</td>
-                <td>
-                    <a href="edit?id=${borrow.id}">Edit</a>
-                    <a href="delete?id=${borrow.id}">Delete</a>
-                </td>
-            </tr>
-        </c:forEach>
-    </table>
-    <a href="new">Add New Borrow</a>
+    </c:forEach>
+</table>
 </body>
 </html>

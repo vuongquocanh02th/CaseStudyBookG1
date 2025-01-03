@@ -1,12 +1,14 @@
 package service.borrow;
 
 import model.Borrow;
+import model.BorrowDetail;
 import java.util.List;
 
 public interface IBorrowService {
-    List<Borrow> getAllBorrows();
-    Borrow getBorrowById(int id);
-    void addBorrow(Borrow borrow);
-    void updateBorrow(Borrow borrow);
-    void deleteBorrow(int id);
+    List<Borrow> findAll();
+    Borrow findById(int id);
+    void save(Borrow borrow);
+    void update(Borrow borrow);
+    void delete(int id);
+    List<BorrowDetail> findDetailsByBorrowId(int borrowId);
 }

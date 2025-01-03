@@ -3,10 +3,26 @@ package model;
 public class Borrow {
     private int id;
     private int customerId;
-    private int bookId;
     private String borrowDate;
+    private String returnDate;
 
-    // Getters and setters
+    public Borrow() {}
+
+    public Borrow(int customerId, String borrowDate, String returnDate) {
+        this.customerId = customerId;
+        this.borrowDate = borrowDate;
+        this.returnDate = returnDate;
+    }
+
+    public Borrow(int id, int customerId, String borrowDate, String returnDate) {
+        this.id = id;
+        this.customerId = customerId;
+        this.borrowDate = borrowDate;
+        this.returnDate = returnDate;
+    }
+
+    // Getters and Setters
+
     public int getId() {
         return id;
     }
@@ -23,19 +39,19 @@ public class Borrow {
         this.customerId = customerId;
     }
 
-    public int getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(int bookId) {
-        this.bookId = bookId;
-    }
-
     public String getBorrowDate() {
         return borrowDate;
     }
 
     public void setBorrowDate(String borrowDate) {
         this.borrowDate = borrowDate;
+    }
+
+    public String getReturnDate() {
+        return returnDate;
+    }
+
+    public void setReturnDate(String returnDate) {
+        this.returnDate = returnDate;
     }
 }
