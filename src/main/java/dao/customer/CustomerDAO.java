@@ -85,4 +85,56 @@ public class CustomerDAO implements ICustomerDAO {
             return false;
         }
     }
+
+    //khach dang muon sach
+    public boolean hasActiveBorrows(int customerId) {
+        String query = "SELECT COUNT(*) FROM Borrow WHERE customerId = ? AND returnDate IS NULL";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, customerId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    //phan trang
+    private int noOfRecords;
+
+    public List<Customer> getCustomersByPage(int offset, int noOfRecords) {
+        List<Customer> customers = new ArrayList<>();
+        String query = "SELECT SQL_CALC_FOUND_ROWS * FROM Customer LIMIT ?, ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, offset);
+            ps.setInt(2, noOfRecords);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                Customer customer = new Customer(
+                        rs.getInt("ID"),
+                        rs.getString("Name"),
+                        rs.getString("SchoolName"),
+                        rs.getString("Address"),
+                        rs.getDate("DOB")
+                );
+                customers.add(customer);
+            }
+            rs.close();
+            rs = ps.executeQuery("SELECT FOUND_ROWS()");
+            if (rs.next()) {
+                this.noOfRecords = rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return customers;
+    }
+
+    public int getNoOfRecords() {
+        return noOfRecords;
+    }
 }

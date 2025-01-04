@@ -131,7 +131,7 @@
 
     <!-- Success or error message -->
     <c:if test="${not empty message}">
-        <div class="message ${message eq 'Customer successfully deleted.' ? 'success' : 'error'}">
+        <div class="message ${message.contains('Cannot delete') ? 'error' : 'success'}">
                 ${message}
         </div>
     </c:if>
@@ -161,6 +161,21 @@
         </c:forEach>
         </tbody>
     </table>
+    <div style="text-align: center; margin-top: 20px;">
+        <c:forEach var="i" begin="1" end="${noOfPages}">
+            <a href="customers?action=listCustomers&page=${i}" style="
+                margin: 0 5px;
+                padding: 10px 15px;
+                text-decoration: none;
+                border: 1px solid #3498db;
+                border-radius: 5px;
+                color: #3498db;
+                font-size: 1rem;
+                ${i == currentPage ? 'background-color: #3498db; color: white;' : ''}">
+                    ${i}
+            </a>
+        </c:forEach>
+    </div>
 </div>
 
 </body>

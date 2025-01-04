@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.Date;
+import java.util.List;
 
 @WebServlet("/customers")
 public class CustomerController extends HttpServlet {
@@ -40,22 +41,49 @@ public class CustomerController extends HttpServlet {
         } else if ("delete".equals(action)) {
             try {
                 int id = Integer.parseInt(req.getParameter("id"));
-                Customer customer = customerDAO.getCustomerById(id);
-                if (customer != null) {
-                    req.setAttribute("customer", customer);
-                    req.getRequestDispatcher("customer/deleteCustomer.jsp").forward(req, resp);
+                if (customerDAO.hasActiveBorrows(id)) {
+                    req.setAttribute("message", "Cannot delete customer with active borrows.");
+                    req.setAttribute("customers", customerDAO.getAllCustomers());
+                    req.getRequestDispatcher("customer/customer.jsp").forward(req, resp);
                 } else {
-                    req.setAttribute("errorMessage", "Customer not found.");
-                    req.getRequestDispatcher("error.jsp").forward(req, resp);
+                    boolean success = customerDAO.deleteCustomer(id);
+                    if (success) {
+                        req.setAttribute("message", "Customer successfully deleted.");
+                    } else {
+                        req.setAttribute("message", "Customer deletion failed. Try again.");
+                    }
+                    req.setAttribute("customers", customerDAO.getAllCustomers());
+                    req.getRequestDispatcher("customer/customer.jsp").forward(req, resp);
                 }
             } catch (NumberFormatException e) {
                 req.setAttribute("errorMessage", "Invalid customer ID format.");
+                req.getRequestDispatcher("error.jsp").forward(req, resp);
+            } catch (Exception e) {
+                req.setAttribute("errorMessage", "An error occurred while deleting the customer.");
                 req.getRequestDispatcher("error.jsp").forward(req, resp);
             }
         } else {
             req.setAttribute("customers", customerDAO.getAllCustomers());
             req.getRequestDispatcher("customer/customer.jsp").forward(req, resp);
         }
+        if (action == null || action.equals("listCustomers")) {
+            listCustomers(req, resp);
+        }
+    }
+
+    private void listCustomers(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int page = 1;
+        int recordsPerPage = 10;
+        if (req.getParameter("page") != null) {
+            page = Integer.parseInt(req.getParameter("page"));
+        }
+        List<Customer> customersList = customerDAO.getCustomersByPage((page - 1) * recordsPerPage, recordsPerPage);
+        int noOfRecords = customerDAO.getNoOfRecords();
+        int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
+        req.setAttribute("customers", customersList);
+        req.setAttribute("noOfPages", noOfPages);
+        req.setAttribute("currentPage", page);
+        req.getRequestDispatcher("customer/customer.jsp").forward(req, resp);
     }
 
     @Override

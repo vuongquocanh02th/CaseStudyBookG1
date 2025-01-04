@@ -54,7 +54,20 @@ public class BookController extends HttpServlet {
             case "deleteBook":
                 showDeleteBookForm(request, response);
                 break;
+            case "searchBooks":
+                searchBooks(request, response);
+                break;
         }
+    }
+
+    private void searchBooks(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String publisherName = request.getParameter("publisherName");
+        String genreName = request.getParameter("genreName");
+        List<Books> booksList = bookDAO.searchBooks(publisherName, genreName);
+        request.setAttribute("books", booksList);
+        request.setAttribute("publishers", publisherDAO.getAllPublishers());
+        request.setAttribute("genres", genreDAO.getAllGenres());
+        request.getRequestDispatcher("book/book.jsp").forward(request, response);
     }
 
     private void showDeleteBookForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -80,8 +93,17 @@ public class BookController extends HttpServlet {
     }
 
     private void loadBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        List<Books> booksList = bookDAO.getAllBooks();
+        int page = 1;
+        int recordsPerPage = 10;
+        if (request.getParameter("page") != null) {
+            page = Integer.parseInt(request.getParameter("page"));
+        }
+        List<Books> booksList = bookDAO.getBooksByPage((page - 1) * recordsPerPage, recordsPerPage);
+        int noOfRecords = bookDAO.getNoOfRecords();
+        int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
         request.setAttribute("books", booksList);
+        request.setAttribute("noOfPages", noOfPages);
+        request.setAttribute("currentPage", page);
         request.getRequestDispatcher("book/book.jsp").forward(request, response);
     }
 

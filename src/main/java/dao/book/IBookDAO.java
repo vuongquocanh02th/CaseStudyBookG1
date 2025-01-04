@@ -10,4 +10,5 @@ public interface IBookDAO {
     boolean updateBook(Books book);
     boolean deleteBook(int id);
     Books getBookById(int id);
+    List<Books> searchBooks(String publisherName, String genreName);
 }
