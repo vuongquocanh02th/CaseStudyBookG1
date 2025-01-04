@@ -60,12 +60,12 @@
         <textarea name="description" required></textarea>
 
         <label>Status:</label>
-<%--        <select name="status">--%>
-<%--            <option value="Available">Available</option>--%>
-<%--            <option value="Unavailable">Unavailable</option>--%>
-<%--            <option value="Reserved">Reserved</option>--%>
-<%--        </select>--%>
-        <input type="text" name="status" required>
+        <select name="status">
+            <option value="Available">Available</option>
+            <option value="Unavailable">Unavailable</option>
+            <option value="Reserved">Reserved</option>
+        </select>
+<%--        <input type="text" name="status" required>--%>
         <label>Genre:</label>
         <select name="genId">
             <c:forEach var="genre" items="${genres}">
