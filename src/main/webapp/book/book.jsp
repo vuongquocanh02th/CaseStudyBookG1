@@ -115,6 +115,40 @@
     <c:if test="${not empty message}">
         <div class="message">${message}</div>
     </c:if>
+    <form action="books" method="get">
+        <input type="hidden" name="action" value="searchBooks">
+        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
+            <div>
+                <label for="publisherName">Filter by Publisher:</label>
+                <select name="publisherName" id="publisherName">
+                    <option value="">All Publishers</option>
+                    <c:forEach var="publisher" items="${publishers}">
+                        <option value="${publisher.name}">${publisher.name}</option>
+                    </c:forEach>
+                </select>
+            </div>
+            <div>
+                <label for="genreName">Filter by Genre:</label>
+                <select name="genreName" id="genreName">
+                    <option value="">All Genres</option>
+                    <c:forEach var="genre" items="${genres}">
+                        <option value="${genre.name}">${genre.name}</option>
+                    </c:forEach>
+                </select>
+            </div>
+            <div>
+                <button type="submit" style="
+                    background-color: #3498db;
+                    padding: 10px 20px;
+                    text-decoration: none;
+                    border-radius: 5px;
+                    color: white;
+                    font-size: 1rem;">
+                    Search
+                </button>
+            </div>
+        </div>
+    </form>
     <div style="text-align: right; margin-bottom: 20px;">
         <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-primary" style="
         background-color: #3498db;
@@ -166,6 +200,21 @@
         </c:forEach>
         </tbody>
     </table>
+    <div style="text-align: center; margin-top: 20px;">
+        <c:forEach var="i" begin="1" end="${noOfPages}">
+            <a href="books?action=listBooks&page=${i}" style="
+                margin: 0 5px;
+                padding: 10px 15px;
+                text-decoration: none;
+                border: 1px solid #3498db;
+                border-radius: 5px;
+                color: #3498db;
+                font-size: 1rem;
+                ${i == currentPage ? 'background-color: #3498db; color: white;' : ''}">
+                    ${i}
+            </a>
+        </c:forEach>
+    </div>
 </div>
 </body>
 </html>
