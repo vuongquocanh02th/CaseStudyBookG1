@@ -76,13 +76,12 @@
             text-decoration: none;
             border-radius: 5px;
             color: white;
-            background-color: #3498db;
             font-size: 0.9rem;
             text-align: center;
         }
 
         .action-buttons a:hover {
-            background-color: #2980b9;
+            background-color: #fbc479;
         }
 
         .container {
@@ -93,7 +92,9 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
             border-radius: 10px;
         }
-
+        .message{
+            color: green;
+        }
         /* Responsive Design */
         @media (max-width: 768px) {
             table {
@@ -110,6 +111,9 @@
 
 <div class="container">
     <h2>Book List</h2>
+    <c:if test="${not empty message}">
+        <div class="message">${message}</div>
+    </c:if>
     <div style="text-align: right; margin-bottom: 20px;">
         <a href="books?action=addBook" class="btn btn-primary" style="
             background-color: #27ae60;
@@ -145,8 +149,8 @@
                 <td>${book.getPublisher().getName()}</td>
                 <td>${book.getCategory().getName()}</td>
                 <td class="action-buttons">
-                    <a href="#">Edit</a>
-                    <a href="#">Delete</a>
+                    <a style="background: #007BFF" href="books?action=editBook&id=${book.getId()}">Edit</a>
+                    <a style="background: #721c24" href="books?action=deleteBook&id=${book.getId()}">Delete</a>
                 </td>
             </tr>
         </c:forEach>
