@@ -4,10 +4,11 @@ import dao.book.BookDAO;
 import dao.book.IBookDAO;
 import dao.borrow.BorrowDAO;
 import dao.borrow.IBorrowDAO;
-import model.Borrow;
+import dao.customer.CustomerDAO;
+import dao.customer.ICustomerDAO;
+import model.BorrowDetail;
 import model.Books;
-import service.borrow.BorrowService;
-
+import model.Customer;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -16,17 +17,19 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.sql.Date;
 import java.util.List;
 
 @WebServlet("/borrow")
 public class BorrowController extends HttpServlet {
-    private BorrowService borrowService = new BorrowService(new BorrowDAO());
+    private IBorrowDAO borrowDAO;
     private IBookDAO bookDAO;
+    private ICustomerDAO customerDAO;
 
-    public void init(){
+    public void init() {
+        borrowDAO = new BorrowDAO();
         bookDAO = new BookDAO();
+        customerDAO = new CustomerDAO();
     }
 
     @Override
@@ -36,13 +39,28 @@ public class BorrowController extends HttpServlet {
         String role = (String) session.getAttribute("role");
 
         if ("manageBorrows".equals(action) && "admin".equals(role)) {
-            List<Borrow> borrows = borrowService.getAllBorrows();
-            request.setAttribute("borrows", borrows);
-            request.getRequestDispatcher("borrow/manageBorrows.jsp").forward(request, response);
-        } else if ("listBorrows".equals(action) && "user".equals(role)) {
+            List<BorrowDetail> borrowDetails = borrowDAO.getAllBorrowDetails();
+            List<Customer> customers = customerDAO.getAllCustomers();
             List<Books> books = bookDAO.getAllBooks();
+            request.setAttribute("borrowDetails", borrowDetails);
+            request.setAttribute("customers", customers);
             request.setAttribute("books", books);
-            request.getRequestDispatcher("borrow/borrowBooks.jsp").forward(request, response);
+            request.getRequestDispatcher("/borrow/manageBorrows.jsp").forward(request, response);
+        } else if ("editBorrow".equals(action) && "admin".equals(role)) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            BorrowDetail borrowDetail = borrowDAO.getBorrowDetailById(id);
+            List<Customer> customers = customerDAO.getAllCustomers();
+            List<Books> books = bookDAO.getAllBooks();
+            request.setAttribute("borrowDetail", borrowDetail);
+            request.setAttribute("customers", customers);
+            request.setAttribute("books", books);
+            request.getRequestDispatcher("/borrow/editBorrow.jsp").forward(request, response);
+        } else if ("borrowBooks".equals(action) && "user".equals(role)) {
+            List<Customer> customers = customerDAO.getAllCustomers();
+            List<Books> books = bookDAO.getAllBooks();
+            request.setAttribute("customers", customers);
+            request.setAttribute("books", books);
+            request.getRequestDispatcher("/borrow/borrowBooks.jsp").forward(request, response);
         } else {
             response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
         }
@@ -54,29 +72,37 @@ public class BorrowController extends HttpServlet {
         HttpSession session = request.getSession();
         String role = (String) session.getAttribute("role");
 
-        if ("borrowBooks".equals(action) && "user".equals(role)) {
-            try {
-                int bookId = Integer.parseInt(request.getParameter("bookId"));
-                int customerId = (int) session.getAttribute("customerId"); // Assuming customerId is stored in session
-
-                // Get the current date for borrowDate
-                Date borrowDate = new Date();
-
-                // Assuming a fixed return date period of 14 days for simplicity
-                Date returnDate = new Date(borrowDate.getTime() + (14L * 24 * 60 * 60 * 1000));
-
-                boolean success = borrowService.borrowBook(customerId, bookId, borrowDate, returnDate);
-                if (success) {
-                    response.sendRedirect(request.getContextPath() + "/borrow?action=listBorrows");
-                } else {
-                    response.sendRedirect(request.getContextPath() + "/error.jsp");
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-                response.sendRedirect(request.getContextPath() + "/error.jsp");
+        if ("updateBorrow".equals(action) && "admin".equals(role)) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            int customerId = Integer.parseInt(request.getParameter("customerId"));
+            int bookId = Integer.parseInt(request.getParameter("bookId"));
+            Date borrowDate = Date.valueOf(request.getParameter("borrowDate"));
+            Date returnDate = Date.valueOf(request.getParameter("returnDate"));
+            String returnStatus = request.getParameter("returnStatus");
+            Customer customer = customerDAO.getCustomerById(customerId);
+            Books book = bookDAO.getBookById(bookId);
+            BorrowDetail borrowDetail = new BorrowDetail(id, customer, book, borrowDate, returnDate, returnStatus);
+            borrowDAO.updateBorrowDetail(borrowDetail);
+            request.setAttribute("message", "Borrow updated successfully!");
+            response.sendRedirect(request.getContextPath() + "/borrow?action=manageBorrows");
+        } else if ("borrowBooks".equals(action) && "user".equals(role)) {
+            int customerId = Integer.parseInt(request.getParameter("customerId"));
+            int bookId = Integer.parseInt(request.getParameter("bookId"));
+            Date borrowDate = Date.valueOf(request.getParameter("borrowDate"));
+            Date returnDate = Date.valueOf(request.getParameter("returnDate"));
+            if (borrowDAO.borrowBook(customerId, bookId, borrowDate, returnDate)) {
+                request.setAttribute("message", "Book borrowed successfully!");
+            } else {
+                request.setAttribute("message", "Failed to borrow book.");
             }
+            List<Customer> customers = customerDAO.getAllCustomers();
+            List<Books> books = bookDAO.getAllBooks();
+            request.setAttribute("customers", customers);
+            request.setAttribute("books", books);
+            request.getRequestDispatcher("/borrow/borrowBooks.jsp").forward(request, response);
         } else {
             response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
         }
+
     }
 }

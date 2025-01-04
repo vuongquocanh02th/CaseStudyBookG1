@@ -1,14 +1,16 @@
 <%@ page contentType="text/html; charset=UTF-8" %>
 <%@ page pageEncoding="UTF-8" %>
-<%@ page import="java.util.List" %>
-<%@ page import="model.Books" %>
+<%@ page import="model.BorrowDetail" %>
 <%@ page import="model.Customer" %>
+<%@ page import="model.Books" %>
+<%@ page import="java.util.List" %>
+<%@ page import="com.google.gson.Gson" %>
 <!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Borrow Books</title>
+    <title>Edit Borrow</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -40,7 +42,7 @@
             color: #495057;
         }
 
-        select, input, button {
+        input, select, button {
             width: 100%;
             padding: 10px;
             margin-bottom: 20px;
@@ -60,24 +62,12 @@
         button:hover {
             background-color: #0056b3;
         }
-
-        .container {
-            padding: 20px;
-            text-align: center;
-        }
-
-        .message {
-            text-align: center;
-            color: green;
-            font-size: 18px;
-            margin-bottom: 20px;
-        }
     </style>
     <script>
         function updateCustomerName() {
             var customerId = document.getElementById("customerId").value;
             var customerName = document.getElementById("customerName");
-            var customers = JSON.parse('<%= new com.google.gson.Gson().toJson((List<Customer>) request.getAttribute("customers")) %>');
+            var customers = JSON.parse('<%= new Gson().toJson((List<Customer>) request.getAttribute("customers")) %>');
             for (var i = 0; i < customers.length; i++) {
                 if (customers[i].id == customerId) {
                     customerName.value = customers[i].name;
@@ -89,7 +79,7 @@
         function updateBookName() {
             var bookId = document.getElementById("bookId").value;
             var bookName = document.getElementById("bookName");
-            var books = JSON.parse('<%= new com.google.gson.Gson().toJson((List<Books>) request.getAttribute("books")) %>');
+            var books = JSON.parse('<%= new Gson().toJson((List<Books>) request.getAttribute("books")) %>');
             for (var i = 0; i < books.length; i++) {
                 if (books[i].id == bookId) {
                     bookName.value = books[i].bookName;
@@ -100,47 +90,49 @@
     </script>
 </head>
 <body>
-<h2>Borrow Books</h2>
-<% String message = (String) request.getAttribute("message"); %>
-<% if (message != null) { %>
-<div class="message"><%= message %></div>
-<% } %>
-<form action="${pageContext.request.contextPath}/borrow?action=borrowBooks" method="post">
-    <label for="customerId">Select Customer:</label>
-    <select name="customerId" id="customerId" onchange="updateCustomerName()">
+<h2>Edit Borrow</h2>
+<%
+    BorrowDetail borrowDetail = (BorrowDetail) request.getAttribute("borrowDetail");
+    List<Customer> customers = (List<Customer>) request.getAttribute("customers");
+    List<Books> books = (List<Books>) request.getAttribute("books");
+%>
+<form action="${pageContext.request.contextPath}/borrow?action=updateBorrow" method="post">
+    <input type="hidden" name="id" value="<%= borrowDetail.getId() %>">
+    <label for="customerId">Customer ID:</label>
+    <select name="customerId" id="customerId" onchange="updateCustomerName()" required>
         <%
-            List<Customer> customers = (List<Customer>) request.getAttribute("customers");
-            if (customers != null) {
-                for (Customer customer : customers) {
+            for (Customer customer : customers) {
         %>
-        <option value="<%= customer.getId() %>"><%= customer.getId() %></option>
+        <option value="<%= customer.getId() %>" <%= customer.getId() == borrowDetail.getCustomer().getId() ? "selected" : "" %>><%= customer.getId() %></option>
         <%
-                }
             }
         %>
     </select>
     <label for="customerName">Customer Name:</label>
-    <input type="text" id="customerName" readonly>
-    <label for="bookId">Select Book:</label>
-    <select name="bookId" id="bookId" onchange="updateBookName()">
+    <input type="text" id="customerName" value="<%= borrowDetail.getCustomer().getName() %>" readonly>
+    <label for="bookId">Book ID:</label>
+    <select name="bookId" id="bookId" onchange="updateBookName()" required>
         <%
-            List<Books> books = (List<Books>) request.getAttribute("books");
-            if (books != null) {
-                for (Books book : books) {
+            for (Books book : books) {
         %>
-        <option value="<%= book.getId() %>"><%= book.getId() %></option>
+        <option value="<%= book.getId() %>" <%= book.getId() == borrowDetail.getBook().getId() ? "selected" : "" %>><%= book.getId() %></option>
         <%
-                }
             }
         %>
     </select>
     <label for="bookName">Book Name:</label>
-    <input type="text" id="bookName" readonly>
+    <input type="text" id="bookName" value="<%= borrowDetail.getBook().getBookName() %>" readonly>
     <label for="borrowDate">Borrow Date:</label>
-    <input type="date" name="borrowDate" id="borrowDate" required>
+    <input type="date" name="borrowDate" id="borrowDate" value="<%= borrowDetail.getBorrowDate() %>" required>
     <label for="returnDate">Return Date:</label>
-    <input type="date" name="returnDate" id="returnDate" required>
-    <button type="submit">Borrow</button>
+    <input type="date" name="returnDate" id="returnDate" value="<%= borrowDetail.getReturnDate() %>" required>
+    <label for="returnStatus">Return Status:</label>
+    <select name="returnStatus" id="returnStatus" required>
+        <option style="color: yellow" value="Pending" <%= "Pending".equals(borrowDetail.getReturnStatus()) ? "selected" : "" %>>Pending</option>
+        <option style="color: green" value="Returned" <%= "Returned".equals(borrowDetail.getReturnStatus()) ? "selected" : "" %>>Returned</option>
+        <option style="color: red" value="Overdue" <%= "Overdue".equals(borrowDetail.getReturnStatus()) ? "selected" : "" %>>Overdue</option>
+    </select>
+    <button type="submit">Update</button>
 </form>
 </body>
 </html>

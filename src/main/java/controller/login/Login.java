@@ -16,16 +16,18 @@ public class Login extends HttpServlet {
         if ("admin".equals(username) && "admin123".equals(password)) {
             HttpSession session = request.getSession();
             session.setAttribute("role", "admin");
-            response.sendRedirect("dashboard/dashboard.jsp");
+            response.sendRedirect(request.getContextPath() + "/dashboard");
         } else if ("user".equals(username) && "user123".equals(password)) {
             HttpSession session = request.getSession();
             session.setAttribute("role", "user");
-            response.sendRedirect("dashboard/dashboard.jsp");
+            response.sendRedirect(request.getContextPath() + "/dashboard");
         } else {
             request.setAttribute("errorMessage", "Invalid username or password.");
             request.getRequestDispatcher("login/login.jsp").forward(request, response);
         }
     }
+
+    // Hiển thị trang đăng nhập
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
