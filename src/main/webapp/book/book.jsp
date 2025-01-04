@@ -111,10 +111,20 @@
 
 <div class="container">
     <h2>Book List</h2>
+
     <c:if test="${not empty message}">
         <div class="message">${message}</div>
     </c:if>
     <div style="text-align: right; margin-bottom: 20px;">
+        <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-primary" style="
+        background-color: #3498db;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 1rem;">
+            Back to Home
+        </a>
         <a href="books?action=addBook" class="btn btn-primary" style="
             background-color: #27ae60;
             padding: 10px 20px;

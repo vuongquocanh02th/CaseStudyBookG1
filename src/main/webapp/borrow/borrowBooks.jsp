@@ -100,6 +100,15 @@
     </script>
 </head>
 <body>
+<a href="${pageContext.request.contextPath}/dashboard" class="btn btn-primary" style="
+        background-color: #3498db;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 1rem;">
+    Back to Home
+</a>
 <h2>Borrow Books</h2>
 <% String message = (String) request.getAttribute("message"); %>
 <% if (message != null) { %>
@@ -142,5 +151,6 @@
     <input type="date" name="returnDate" id="returnDate" required>
     <button type="submit">Borrow</button>
 </form>
+
 </body>
 </html>

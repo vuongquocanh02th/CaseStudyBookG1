@@ -1,10 +1,10 @@
-<%@ page import="model.Categories" %>
-<%@ page import="java.util.List" %>
-<%
-    List<Categories> categories = (List<Categories>) request.getAttribute("categories");
-%>
-<html>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Categories List</title>
     <style>
         body {
@@ -99,11 +99,30 @@
             color: #c82333;
         }
 
+        .message {
+            text-align: center;
+            color: green;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
+
 <div class="container">
+    <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-primary" style="
+        background-color: #3498db;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 1rem;">
+        Back to Home
+    </a>
     <h1>Categories Management</h1>
+    <c:if test="${not empty message}">
+        <div class="message">${message}</div>
+    </c:if>
     <a href="category/addCategory.jsp" class="button">Add New Category</a>
     <table>
         <tr>
@@ -111,19 +130,18 @@
             <th>Name</th>
             <th>Actions</th>
         </tr>
-        <% for ( Categories category : categories) { %>
-        <tr>
-            <td><%= category.getCategoryId() %></td>
-            <td><%= category.getName() %></td>
-            <td class="action-links">
-                <a href="publisher/editPublishers.jsp?id=<%= category.getCategoryId() %>">Edit</a>
-                <a href="genres?action=delete&id=<%= category.getCategoryId() %>" class="delete-link"
-                   onclick="return confirm('Are you sure you want to delete this genre?')">
-                    Delete
-                </a>
-            </td>
-        </tr>
-        <% } %>
+        <c:forEach var="category" items="${categories}">
+            <tr>
+                <td>${category.categoryId}</td>
+                <td>${category.name}</td>
+                <td class="action-links">
+                    <a href="categories?action=editCategory&id=${category.categoryId}">Edit</a>
+                    <a href="categories?action=deleteCategory&id=${category.categoryId}" class="delete-link">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+        </c:forEach>
     </table>
 </div>
 </body>
