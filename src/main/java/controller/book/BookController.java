@@ -48,8 +48,35 @@ public class BookController extends HttpServlet {
             case "addBook":
                 showAddBookForm(request, response);
                 break;
-
+            case "editBook":
+                showEditBookForm(request, response);
+                break;
+            case "deleteBook":
+                showDeleteBookForm(request, response);
+                break;
         }
+    }
+
+    private void showDeleteBookForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        Books book = bookDAO.getBookById(id);
+        request.setAttribute("book", book);
+        request.getRequestDispatcher("book/deleteBook.jsp").forward(request, response);
+    }
+
+    private void showEditBookForm(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        int id = Integer.parseInt(request.getParameter("id"));
+        Books book = bookDAO.getBookById(id);
+        List<Genres> genres = genreDAO.getAllGenres();
+        List<Publishers> publishers = publisherDAO.getAllPublishers();
+        List<Categories> categories = categoryDAO.getAllCategories();
+
+        request.setAttribute("book", book);
+        request.setAttribute("genres", genres);
+        request.setAttribute("publishers", publishers);
+        request.setAttribute("categories", categories);
+
+        request.getRequestDispatcher("book/editBook.jsp").forward(request, response);
     }
 
     private void loadBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -75,7 +102,51 @@ public class BookController extends HttpServlet {
         String action = req.getParameter("action");
         if ("addBook".equals(action)) {
             addNewBook(req, resp);
+        }else if ("updateBook".equals(action)) {
+            updateBook(req, resp);
+        } else if ("confirmDeleteBook".equals(action)) {
+            deleteBook(req, resp);
         }
+    }
+
+    private void deleteBook(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int id = Integer.parseInt(req.getParameter("id"));
+        boolean isDeleted = bookDAO.deleteBook(id);
+        if (isDeleted) {
+            req.setAttribute("message", "Book deleted successfully.");
+        } else {
+            req.setAttribute("message", "Failed to delete book.");
+        }
+        loadBook(req, resp);
+    }
+
+    private void updateBook(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        int id = Integer.parseInt(req.getParameter("id"));
+        String bookName = req.getParameter("bookName");
+        String description = req.getParameter("description");
+        String status = req.getParameter("status");
+        int genId = Integer.parseInt(req.getParameter("genId"));
+        int publisherId = Integer.parseInt(req.getParameter("publisherId"));
+        int categoryId = Integer.parseInt(req.getParameter("categoryId"));
+
+        Books book = new Books(id, bookName, description, status, genId, publisherId, categoryId);
+
+        boolean isUpdated = bookDAO.updateBook(book);
+        if (isUpdated) {
+            req.setAttribute("message", "Book updated successfully.");
+        } else {
+            req.setAttribute("message", "Failed to update book.");
+        }
+        List<Genres> genres = genreDAO.getAllGenres();
+        List<Publishers> publishers = publisherDAO.getAllPublishers();
+        List<Categories> categories = categoryDAO.getAllCategories();
+
+        req.setAttribute("book", book);
+        req.setAttribute("genres", genres);
+        req.setAttribute("publishers", publishers);
+        req.setAttribute("categories", categories);
+
+        req.getRequestDispatcher("book/editBook.jsp").forward(req, resp);
     }
 
     private void addNewBook(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
