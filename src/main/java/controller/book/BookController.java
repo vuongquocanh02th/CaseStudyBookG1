@@ -86,23 +86,22 @@ public class BookController extends HttpServlet {
         int publisherId = Integer.parseInt(req.getParameter("publisherId"));
         int categoryId = Integer.parseInt(req.getParameter("categoryId"));
 
-        // Log tham số để kiểm tra
-        System.out.println("Book Name: " + bookName);
-        System.out.println("Description: " + description);
-        System.out.println("Status: " + status);
-        System.out.println("Genre ID: " + genId);
-        System.out.println("Publisher ID: " + publisherId);
-        System.out.println("Category ID: " + categoryId);
-
         Books book = new Books(0, bookName, description, status, genId, publisherId, categoryId);
 
         boolean isAdded = bookDAO.addBook(book);
         if (isAdded) {
-            System.out.println("Book added successfully.");
+            req.setAttribute("message", "Book added successfully.");
         } else {
-            System.out.println("Failed to add book.");
+            req.setAttribute("message", "Failed to add book.");
         }
+        List<Genres> genres = genreDAO.getAllGenres();
+        List<Publishers> publishers = publisherDAO.getAllPublishers();
+        List<Categories> categories = categoryDAO.getAllCategories();
 
-        resp.sendRedirect("books");
+        req.setAttribute("genres", genres);
+        req.setAttribute("publishers", publishers);
+        req.setAttribute("categories", categories);
+
+        req.getRequestDispatcher("book/addBook.jsp").forward(req, resp);
     }
 }

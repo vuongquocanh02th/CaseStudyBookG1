@@ -44,14 +44,31 @@
         button:hover {
             background-color: #219150;
         }
+        .message {
+            text-align: center;
+            color: green;
+            font-size: 18px;
+            margin-bottom: 20px;
+        }
+        .return-button {
+            background-color: #3498db;
+            margin-top: 10px;
+        }
+        .return-button:hover {
+            background-color: #2980b9;
+        }
     </style>
 </head>
 <body>
 <div class="form-container">
     <h2>Add New Book</h2>
 
+    <c:if test="${not empty message}">
+        <div class="message">${message}</div>
+    </c:if>
+
     <form action="books" method="post">
-        <input type="hidden" name="action" value="add">
+        <input type="hidden" name="action" value="addBook">
 
         <label>Book Name:</label>
         <input type="text" name="bookName" required>
@@ -65,7 +82,7 @@
             <option value="Unavailable">Unavailable</option>
             <option value="Reserved">Reserved</option>
         </select>
-<%--        <input type="text" name="status" required>--%>
+
         <label>Genre:</label>
         <select name="genId">
             <c:forEach var="genre" items="${genres}">
@@ -88,6 +105,10 @@
         </select>
 
         <button type="submit">Add Book</button>
+    </form>
+    <form action="books" method="get">
+        <input type="hidden" name="action" value="listBooks">
+        <button type="submit" class="return-button">Return to BookList</button>
     </form>
 </div>
 </body>
