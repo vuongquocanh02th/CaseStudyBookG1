@@ -103,6 +103,15 @@
 </head>
 <body>
 <div class="container">
+    <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-primary" style="
+        background-color: #3498db;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 1rem;">
+        Back to Home
+    </a>
     <h1>Publisher Management</h1>
     <a href="publisher/addPublisher.jsp" class="button">Add New Publisher</a>
     <table>
@@ -117,8 +126,7 @@
             <td><%= publisher.getName() %></td>
             <td class="action-links">
                 <a href="publisher/editPublishers.jsp?id=<%= publisher.getPublisherId() %>">Edit</a>
-                <a href="genres?action=delete&id=<%= publisher.getPublisherId() %>" class="delete-link"
-                   onclick="return confirm('Are you sure you want to delete this genre?')">
+                <a href="genres?action=delete&id=<%= publisher.getPublisherId() %>" class="delete-link">
                     Delete
                 </a>
             </td>

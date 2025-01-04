@@ -102,7 +102,17 @@
   </style>
 </head>
 <body>
+
 <div class="container">
+  <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-primary" style="
+        background-color: #3498db;
+        padding: 10px 20px;
+        text-decoration: none;
+        border-radius: 5px;
+        color: white;
+        font-size: 1rem;">
+    Back to Home
+  </a>
   <h1>Genre Management</h1>
   <a href="genre/addGenre.jsp" class="button">Add New Genre</a>
   <table>
