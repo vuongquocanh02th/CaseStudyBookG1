@@ -8,68 +8,101 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
     <style>
-        .link-box {
-            display: flex;
-            justify-content: center;
-            margin-top: 40px;
+        /* Basic Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        .link-box a {
-            margin: 0 20px;
-            padding: 15px 30px;
-            background-color: #007bff;
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+        }
+
+        .sidebar {
+            width: 250px;
+            background-color: #2c3e50;
+            padding: 20px;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .sidebar h2 {
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .sidebar a {
             color: white;
             text-decoration: none;
-            font-size: 18px;
-            border-radius: 8px;
-            font-weight: 600;
+            font-size: 1rem;
+            margin: 10px 0;
+            padding: 10px 20px;
+            width: 100%;
+            text-align: center;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
         }
 
-        .link-box a:hover {
-            background-color: #0056b3;
+        .sidebar a:hover {
+            background-color: #3498db;
         }
-        .navbar {
+
+        .main-content {
+            flex: 1;
+            background: url('https://s.net.vn/uehy') no-repeat center center;
+            background-size: cover;
+            padding: 20px;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
+            justify-content: center;
             align-items: center;
-            background-color: #0056b3;
-            padding: 20px 50px;
-            color: white;
         }
 
-        .navbar h2 {
-            margin: 0;
-            font-size: 28px;
+        .main-content h2 {
+            font-size: 2.5rem;
+            color: #cdff00;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+
+        .logout {
+            margin-top: auto;
         }
 
         .logout a {
             color: white;
             text-decoration: none;
-            font-size: 18px;
-            background-color: #dc3545;
+            font-size: 1rem;
+            background-color: #e74c3c;
             padding: 10px 20px;
             border-radius: 5px;
+            transition: background-color 0.3s ease;
         }
 
         .logout a:hover {
-            background-color: #c82333;
+            background-color: #c0392b;
         }
     </style>
 </head>
 <body>
 <div class="container">
-    <h2>Welcome to Library Management</h2>
-    <div class="navbar">
-        <h2>Welcome to Library Management</h2>
-        <div class="logout">
-            <a href="${pageContext.request.contextPath}/login">Logout</a>
-        </div>
-    </div>
-    <%
-        String role = (String) session.getAttribute("role");
-    %>
-    <div class="link-box">
-        <% if ("admin".equals(role)) { %>
+    <div class="sidebar">
+        <h2>Library Management</h2>
+        <%
+            String role = (String) session.getAttribute("role");
+            if ("admin".equals(role)) {
+        %>
         <a href="${pageContext.request.contextPath}/books?action=listBooks">Manage Books</a>
         <a href="${pageContext.request.contextPath}/categories">Manage Categories</a>
         <a href="${pageContext.request.contextPath}/genres">Manage Genres</a>
@@ -80,6 +113,12 @@
         <a href="${pageContext.request.contextPath}/books">View Books</a>
         <a href="${pageContext.request.contextPath}/borrow?action=borrowBooks">Borrow Books</a>
         <% } %>
+        <div class="logout">
+            <a href="${pageContext.request.contextPath}/login">Logout</a>
+        </div>
+    </div>
+    <div class="main-content">
+        <h2>Welcome to Library Management</h2>
     </div>
 </div>
 </body>
