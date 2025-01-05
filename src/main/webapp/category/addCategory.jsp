@@ -76,7 +76,7 @@
     </form>
     <form action="categories" method="get">
         <input type="hidden" name="action" value="listCategories">
-        <button type="submit" class="return-button">Back to Categories List</button>
+        <button type="submit" class="return-button">Back to Category List</button>
     </form>
 </div>
 </body>

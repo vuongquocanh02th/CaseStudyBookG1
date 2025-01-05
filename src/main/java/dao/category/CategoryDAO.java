@@ -37,20 +37,45 @@ public class CategoryDAO implements ICategoryDAO {
 
     @Override
     public boolean addCategory(Categories category) {
-        return executeUpdate(INSERT_CATEGORY, stmt -> stmt.setString(1, category.getName())) > 0;
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(INSERT_CATEGORY)) {
+
+            statement.setString(1, category.getName());
+            return statement.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            handleSQLException(e);
+            return false;
+        }
     }
 
     @Override
     public boolean updateCategory(Categories category) {
-        return executeUpdate(UPDATE_CATEGORY, stmt -> {
-            stmt.setString(1, category.getName());
-            stmt.setInt(2, category.getCategoryId());
-        }) > 0;
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(UPDATE_CATEGORY)) {
+
+            statement.setString(1, category.getName());
+            statement.setInt(2, category.getCategoryId());
+            return statement.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            handleSQLException(e);
+            return false;
+        }
     }
 
     @Override
     public boolean deleteCategory(int id) {
-        return executeUpdate(DELETE_CATEGORY, stmt -> stmt.setInt(1, id)) > 0;
+        try (Connection connection = DBConnection.getConnection();
+             PreparedStatement statement = connection.prepareStatement(DELETE_CATEGORY)) {
+
+            statement.setInt(1, id);
+            return statement.executeUpdate() > 0;
+
+        } catch (SQLException e) {
+            handleSQLException(e);
+            return false;
+        }
     }
 
     @Override
@@ -77,23 +102,5 @@ public class CategoryDAO implements ICategoryDAO {
 
     private void handleSQLException(SQLException e) {
         e.printStackTrace(); // Replace with proper logging in production.
-    }
-
-    private int executeUpdate(String query, SQLConsumer<PreparedStatement> consumer) {
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-
-            consumer.accept(statement);
-            return statement.executeUpdate();
-
-        } catch (SQLException e) {
-            handleSQLException(e);
-            return 0;
-        }
-    }
-
-    @FunctionalInterface
-    private interface SQLConsumer<T> {
-        void accept(T t) throws SQLException;
     }
 }
