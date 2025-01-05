@@ -26,7 +26,7 @@ public class BookDAO implements IBookDAO {
             "JOIN Categories c ON b.CategoryID = c.CategoryID " +
             "WHERE p.Name LIKE ? AND g.Name LIKE ?";
 
-    private static final String SELECT_NEWEST_BOOKS = "SELECT * FROM Books ORDER BY entryDate DESC LIMIT 10";
+    private static final String SELECT_NEWEST_BOOKS = "SELECT * FROM Books ORDER BY    Description" + " DESC LIMIT 10";
 
     @Override
     public List<Books> getAllBooks() {
