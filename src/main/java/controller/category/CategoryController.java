@@ -9,7 +9,7 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.*;
 import java.io.IOException;
 
-@WebServlet("/categories")
+@WebServlet("/category")
 public class CategoryController extends HttpServlet {
     private ICategoryDAO categoryDAO;
 
@@ -90,7 +90,7 @@ public class CategoryController extends HttpServlet {
             req.setAttribute("message", "Failed to update category.");
         }
         req.setAttribute("category", category);
-        req.getRequestDispatcher("category/editCategory.jsp").forward(req, resp);
+        req.getRequestDispatcher("category/editCategory.jsp").forward(req, resp) ;
     }
 
     private void deleteCategory(HttpServletRequest req, HttpServletResponse resp) throws IOException, ServletException {
@@ -99,8 +99,8 @@ public class CategoryController extends HttpServlet {
         if (isDeleted) {
             req.setAttribute("message", "Category deleted successfully.");
         } else {
-            req.setAttribute("message", "Failed to delete category. There are books associated with this category.");
+             req.setAttribute("message", "Failed to delete category. There are books associated with this category.");
         }
-        listCategories(req, resp);
+        listCategories(req, resp) ;
     }
 }
