@@ -21,7 +21,8 @@ public class CategoryController extends HttpServlet {
         String action = req.getParameter("action");
         if (action == null || action.equals("listCategories")) {
             listCategories(req, resp);
-        } else {
+        } else
+        {
             switch (action) {
                 case "editCategory":
                     showEditCategoryForm(req, resp);
@@ -33,12 +34,14 @@ public class CategoryController extends HttpServlet {
         }
     }
 
-    private void listCategories(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void listCategories(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+    {
         req.setAttribute("categories", categoryDAO.getAllCategories());
         req.getRequestDispatcher("category/category.jsp").forward(req, resp);
     }
 
-    private void showEditCategoryForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    private void showEditCategoryForm(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException
+    {
         int id = Integer.parseInt(req.getParameter("id"));
         Categories category = categoryDAO.getCategoryById(id);
         req.setAttribute("category", category);
@@ -69,7 +72,8 @@ public class CategoryController extends HttpServlet {
         boolean isAdded = categoryDAO.addCategory(category);
         if (isAdded) {
             req.setAttribute("message", "Category added successfully.");
-        } else {
+        } else
+        {
             req.setAttribute("message", "Failed to add category.");
         }
         listCategories(req, resp);
