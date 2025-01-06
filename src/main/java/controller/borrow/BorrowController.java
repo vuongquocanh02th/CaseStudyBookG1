@@ -61,7 +61,7 @@ public class BorrowController extends HttpServlet {
             request.setAttribute("customers", customers);
             request.setAttribute("books", books);
             request.getRequestDispatcher("/borrow/borrowBooks.jsp").forward(request, response);
-        } else if ("deleteBorrow".equals(action) && "admin".equals(role)) {
+        }else if ("deleteBorrow".equals(action) && "admin".equals(role)) {
             int id = Integer.parseInt(request.getParameter("id"));
             BorrowDetail borrowDetail = borrowDAO.getBorrowDetailById(id);
             request.setAttribute("borrowDetail", borrowDetail);

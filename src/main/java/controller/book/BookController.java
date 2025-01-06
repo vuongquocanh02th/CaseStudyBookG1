@@ -42,7 +42,6 @@ public class BookController extends HttpServlet {
         String action = request.getParameter("action");
         if (action == null || action.equals("listBooks")) {
              loadBook(request, response);
-
         }
         switch (action) {
             case "addBook":

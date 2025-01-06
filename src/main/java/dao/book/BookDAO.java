@@ -18,7 +18,8 @@ public class BookDAO implements IBookDAO {
     private static final String UPDATE_BOOK = "UPDATE Books SET bookName = ?, description = ?, status = ?, genId = ?, publisherId = ?, categoryId = ? WHERE id = ?";
     private static final String DELETE_BOOK = "DELETE FROM Books WHERE ID = ?";
     private static final String INSERT_BOOK = "INSERT INTO Books (BookName, Description, Status, GenID, PublisherID, CategoryID) values (?, ?, ?, ?, ?, ?)";
-    private static final String SELECT_ALL_BOOKS_INFO = "SELECT b.ID, b.BookName, b.Description, b.Status, g.Name AS GenreName, \n" +
+
+   private static final String SELECT_ALL_BOOKS_INFO = "SELECT b.ID, b.BookName, b.Description, b.Status, g.Name AS GenreName, \n" +
             "       p.Name AS PublisherName, c.Name AS CategoryName \n" +
             "FROM Books b \n" +
             "JOIN Genres g ON b.GenID = g.ID \n" +
@@ -184,4 +185,4 @@ public class BookDAO implements IBookDAO {
         }
         return books;
     }
-}
+

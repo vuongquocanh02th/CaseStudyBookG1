@@ -116,17 +116,16 @@
     </c:if>
     <form action="${pageContext.request.contextPath}/books?action=searchBooks" method="get">
         <input type="hidden" name="action" value="searchBooks">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-            <div>
-                <label for="publisherName">Filter by Publisher:</label>
-                <select name="publisherName" id="publisherName">
-                    <option value="">All Publishers</option>
-                    <c:forEach var="publisher" items="${publishers}">
-                        <option value="${publisher.name}">${publisher.name}</option>
-                    </c:forEach>
-                </select>
-            </div>
-            <div>
+        <div>
+            <label for="publisherName">Filter by Publisher:</label>
+            <select name="publisherName" id="publisherName">
+                <option value="">All Publishers</option>
+                <c:forEach var="publisher" items="${publishers}">
+                    <option value="${publisher.name}">${publisher.name}</option>
+                </c:forEach>
+            </select>
+        </div>
+        <div>
                 <label for="genreName">Filter by Genre:</label>
                 <select name="genreName" id="genreName">
                     <option value="">All Genres</option>
@@ -146,7 +145,6 @@
                     Search
                 </button>
             </div>
-        </div>
     </form>
     <div style="text-align: right; margin-bottom: 20px;">
         <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-primary" style="
@@ -199,6 +197,7 @@
         </c:forEach>
         </tbody>
     </table>
+
 </div>
 </body>
 </html>
