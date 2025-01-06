@@ -9,8 +9,7 @@
 <table border="1">
     <tr>
         <th>ID</th>
-        <th>Borrow ID</th>
-        <th>Book ID</th>
+        <th>Book Name</th>
         <th>Borrow Date</th>
         <th>Return Date</th>
         <th>Return Status</th>
@@ -18,8 +17,7 @@
     <c:forEach var="detail" items="${borrowDetails}">
         <tr>
             <td>${detail.id}</td>
-            <td>${detail.borrowId}</td>
-            <td>${detail.bookId}</td>
+            <td>${detail.bookName}</td>
             <td>${detail.borrowDate}</td>
             <td>${detail.returnDate}</td>
             <td>${detail.returnStatus}</td>

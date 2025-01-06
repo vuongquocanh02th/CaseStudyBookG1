@@ -12,6 +12,7 @@
         <th>ID</th>
         <th>Customer ID</th>
         <th>Customer Name</th>
+        <th>Book Name</th>
         <th>Borrow Date</th>
         <th>Return Date</th>
         <th>Actions</th>
@@ -21,6 +22,7 @@
             <td>${borrow.id}</td>
             <td>${borrow.customerId}</td>
             <td>${borrow.customerName}</td>
+            <td>${borrow.bookName}</td>
             <td>${borrow.borrowDate}</td>
             <td>${borrow.returnDate}</td>
             <td>

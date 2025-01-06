@@ -87,21 +87,21 @@ public class BookDAOImpl implements IBookDAO {
     }
 
     @Override
-    public void update(Book book) {
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_BOOK)) {
-            preparedStatement.setString(1, book.getBookName());
-            preparedStatement.setString(2, book.getDescription());
-            preparedStatement.setString(3, book.getStatus());
-            preparedStatement.setObject(4, book.getGenID(), Types.INTEGER);
-            preparedStatement.setObject(5, book.getPublisherID(), Types.INTEGER);
-            preparedStatement.setObject(6, book.getCategoryID(), Types.INTEGER);
-            preparedStatement.setInt(7, book.getId());
-            preparedStatement.executeUpdate();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+public void update(Book book) {
+    try (Connection connection = DBConnection.getConnection();
+         PreparedStatement preparedStatement = connection.prepareStatement(UPDATE_BOOK)) {
+        preparedStatement.setString(1, book.getBookName());
+        preparedStatement.setString(2, book.getDescription());
+        preparedStatement.setString(3, book.getStatus());
+        preparedStatement.setObject(4, book.getGenID(), Types.INTEGER);
+        preparedStatement.setObject(5, book.getPublisherID(), Types.INTEGER);
+        preparedStatement.setObject(6, book.getCategoryID(), Types.INTEGER);
+        preparedStatement.setInt(7, book.getId());
+        preparedStatement.executeUpdate();
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+}
 
     @Override
     public void delete(int id) {

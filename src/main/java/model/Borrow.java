@@ -6,6 +6,8 @@ public class Borrow {
     private String customerName;
     private String borrowDate;
     private String returnDate;
+    private int bookId;
+    private String bookName;
 
     public Borrow() {}
 
@@ -15,16 +17,17 @@ public class Borrow {
         this.returnDate = returnDate;
     }
 
-    public Borrow(int id, int customerId, String customerName, String borrowDate, String returnDate) {
+    public Borrow(int id, int customerId, String customerName, String borrowDate, String returnDate, int bookId, String bookName) {
         this.id = id;
         this.customerId = customerId;
         this.customerName = customerName;
         this.borrowDate = borrowDate;
         this.returnDate = returnDate;
+        this.bookId = bookId;
+        this.bookName = bookName;
     }
 
     // Getters and Setters
-
     public int getId() {
         return id;
     }
@@ -63,5 +66,21 @@ public class Borrow {
 
     public void setReturnDate(String returnDate) {
         this.returnDate = returnDate;
+    }
+
+    public int getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(int bookId) {
+        this.bookId = bookId;
+    }
+
+    public String getBookName() {
+        return bookName;
+    }
+
+    public void setBookName(String bookName) {
+        this.bookName = bookName;
     }
 }

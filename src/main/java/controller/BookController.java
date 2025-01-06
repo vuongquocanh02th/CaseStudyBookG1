@@ -89,9 +89,42 @@ public class BookController extends HttpServlet {
 
     private void updateBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
-        Book updatedBook = createBookFromRequest(request);
-        updatedBook.setId(id);
-        bookService.update(updatedBook);
+        String bookName = request.getParameter("bookName");
+        String description = request.getParameter("description");
+        String status = request.getParameter("status");
+    
+        // Handle Genre
+        String genIDStr = request.getParameter("genID");
+        String newGenre = request.getParameter("newGenre");
+        Integer genID = null;
+        if (newGenre != null && !newGenre.isEmpty()) {
+            genID = saveNewGenre(newGenre);
+        } else if (genIDStr != null && !genIDStr.isEmpty()) {
+            genID = Integer.parseInt(genIDStr);
+        }
+    
+        // Handle Publisher
+        String publisherIDStr = request.getParameter("publisherID");
+        String newPublisher = request.getParameter("newPublisher");
+        Integer publisherID = null;
+        if (newPublisher != null && !newPublisher.isEmpty()) {
+            publisherID = saveNewPublisher(newPublisher);
+        } else if (publisherIDStr != null && !publisherIDStr.isEmpty()) {
+            publisherID = Integer.parseInt(publisherIDStr);
+        }
+    
+        // Handle Category
+        String categoryIDStr = request.getParameter("categoryID");
+        String newCategory = request.getParameter("newCategory");
+        Integer categoryID = null;
+        if (newCategory != null && !newCategory.isEmpty()) {
+            categoryID = saveNewCategory(newCategory);
+        } else if (categoryIDStr != null && !categoryIDStr.isEmpty()) {
+            categoryID = Integer.parseInt(categoryIDStr);
+        }
+    
+        Book book = new Book(id, bookName, description, status, genID, publisherID, categoryID);
+        bookService.update(book);
         response.sendRedirect("/books");
     }
 
