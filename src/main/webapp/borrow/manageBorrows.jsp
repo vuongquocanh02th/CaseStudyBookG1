@@ -139,7 +139,7 @@
                 <input type="hidden" name="id" value="<%= borrowDetail.getId() %>">
                 <button type="submit" class="edit-btn">Edit</button>
             </form>
-            <form action="<%= request.getContextPath() %>/borrow" method="post">
+            <form action="<%= request.getContextPath() %>/borrow?action=deleteBorrow" method="get">
                 <input type="hidden" name="action" value="deleteBorrow">
                 <input type="hidden" name="id" value="<%= borrowDetail.getId() %>">
                 <button type="submit" class="delete-btn">Delete</button>

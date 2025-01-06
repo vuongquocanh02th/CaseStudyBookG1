@@ -24,9 +24,9 @@ public class GenreDAO implements IGenreDAO{
         try(Connection connection = DBConnection.getConnection();
             PreparedStatement statement = connection.prepareStatement(SELECT_ALL_GENRES);
             ResultSet resultSet = statement.executeQuery();) {
-            while (resultSet.next()) {
-                genres.add(new Genres(resultSet.getInt("id"), resultSet.getString("name")));
-            }
+                while (resultSet.next()) {
+                    genres.add(new Genres(resultSet.getInt("id"), resultSet.getString("name")));
+                }
         }catch (SQLException e){
             e.printStackTrace();
         }
@@ -36,7 +36,7 @@ public class GenreDAO implements IGenreDAO{
     @Override
     public boolean addGenre(Genres genre) {
         try(Connection connection = DBConnection.getConnection();
-            PreparedStatement statement = connection.prepareStatement(INSERT_GENRE);){
+        PreparedStatement statement = connection.prepareStatement(INSERT_GENRE);){
             statement.setString(1, genre.getName());
             return statement.executeUpdate() > 0;
         }catch (SQLException e){

@@ -1,4 +1,3 @@
-
 package model;
 
 import java.util.Date;
@@ -52,3 +51,4 @@ public class Borrow {
         this.returnDate = returnDate;
     }
 }
+

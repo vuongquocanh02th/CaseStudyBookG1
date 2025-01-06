@@ -1,6 +1,5 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-         pageEncoding="UTF-8" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -115,19 +114,18 @@
     <c:if test="${not empty message}">
         <div class="message">${message}</div>
     </c:if>
-    <form action="books" method="get">
+    <form action="${pageContext.request.contextPath}/books?action=searchBooks" method="get">
         <input type="hidden" name="action" value="searchBooks">
-        <div style="display: flex; justify-content: space-between; margin-bottom: 20px;">
-            <div>
-                <label for="publisherName">Filter by Publisher:</label>
-                <select name="publisherName" id="publisherName">
-                    <option value="">All Publishers</option>
-                    <c:forEach var="publisher" items="${publishers}">
-                        <option value="${publisher.name}">${publisher.name}</option>
-                    </c:forEach>
-                </select>
-            </div>
-            <div>
+        <div>
+            <label for="publisherName">Filter by Publisher:</label>
+            <select name="publisherName" id="publisherName">
+                <option value="">All Publishers</option>
+                <c:forEach var="publisher" items="${publishers}">
+                    <option value="${publisher.name}">${publisher.name}</option>
+                </c:forEach>
+            </select>
+        </div>
+        <div>
                 <label for="genreName">Filter by Genre:</label>
                 <select name="genreName" id="genreName">
                     <option value="">All Genres</option>
@@ -147,7 +145,6 @@
                     Search
                 </button>
             </div>
-        </div>
     </form>
     <div style="text-align: right; margin-bottom: 20px;">
         <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-primary" style="
@@ -210,8 +207,7 @@
                 border-radius: 5px;
                 color: #3498db;
                 font-size: 1rem;
-                ${i == currentPage ? 'background-color: #3498db; color: white;' : ''}">
-                    ${i}
+                ${i == currentPage ? 'background-color: #3498db; color: white;' : ''}">${i}
             </a>
         </c:forEach>
     </div>

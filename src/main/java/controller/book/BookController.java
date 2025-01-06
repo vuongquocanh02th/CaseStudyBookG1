@@ -41,8 +41,12 @@ public class BookController extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
         if (action == null || action.equals("listBooks")) {
-            loadBook(request, response);
-
+            // loadBook(request, response);
+            List<Books> booksList = bookDAO.getAllBooks();
+            request.setAttribute("publishers", publisherDAO.getAllPublishers());
+            request.setAttribute("genres", genreDAO.getAllGenres());
+            request.setAttribute("books", booksList);
+            request.getRequestDispatcher("book/book.jsp").forward(request, response);
         }
         switch (action) {
             case "addBook":

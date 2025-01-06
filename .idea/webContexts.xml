@@ -5,6 +5,7 @@
       <map>
         <entry key="file://$PROJECT_DIR$/src/main/webapp/borrow/borrowBooks.jsp" value="file://$PROJECT_DIR$/src/main/webapp/borrow" />
         <entry key="file://$PROJECT_DIR$/src/main/webapp/category/addCategory.jsp" value="file://$PROJECT_DIR$/src/main/webapp/category" />
+        <entry key="file://$PROJECT_DIR$/src/main/webapp/category/editCategory.jsp" value="file://$PROJECT_DIR$/src/main/webapp/category" />
       </map>
     </option>
   </component>

@@ -18,7 +18,12 @@ public class BookDAO implements IBookDAO {
     private static final String UPDATE_BOOK = "UPDATE Books SET bookName = ?, description = ?, status = ?, genId = ?, publisherId = ?, categoryId = ? WHERE id = ?";
     private static final String DELETE_BOOK = "DELETE FROM Books WHERE ID = ?";
     private static final String INSERT_BOOK = "INSERT INTO Books (BookName, Description, Status, GenID, PublisherID, CategoryID) values (?, ?, ?, ?, ?, ?)";
-    private static final String SELECT_ALL_BOOKS_INFO = "SELECT b.ID, b.BookName, b.Description, b.Status, g.Name as GenreName, p.Name as PublisherName, c.Name as CategoryName FROM Books b JOIN Genres g ON b.GenID = g.ID JOIN Publishers p ON b.PublisherID = p.PublisherID JOIN Categories c ON b.CategoryID = c.CategoryID";
+    private static final String SELECT_ALL_BOOKS_INFO = "SELECT b.ID, b.BookName, b.Description, b.Status, g.Name AS GenreName,\n" +
+            "       p.Name AS PublisherName, c.Name AS CategoryName\n" +
+            "FROM Books b\n" +
+            "JOIN Genres g ON b.GenID = g.ID\n" +
+            "JOIN Publishers p ON b.PublisherID = p.PublisherID\n" +
+            "JOIN Categories c ON b.CategoryID = c.CategoryID";
     private static final String SEARCH_BOOKS = "SELECT b.ID, b.BookName, b.Description, b.Status, g.Name as GenreName, p.Name as PublisherName, c.Name as CategoryName " +
             "FROM Books b " +
             "JOIN Genres g ON b.GenID = g.ID " +
@@ -26,7 +31,7 @@ public class BookDAO implements IBookDAO {
             "JOIN Categories c ON b.CategoryID = c.CategoryID " +
             "WHERE p.Name LIKE ? AND g.Name LIKE ?";
 
-    private static final String SELECT_NEWEST_BOOKS = "SELECT * FROM Books ORDER BY    Description" + " DESC LIMIT 10";
+    private static final String SELECT_NEWEST_BOOKS = "SELECT * FROM Books ORDER BY entryDate DESC LIMIT 10";
 
     @Override
     public List<Books> getAllBooks() {
