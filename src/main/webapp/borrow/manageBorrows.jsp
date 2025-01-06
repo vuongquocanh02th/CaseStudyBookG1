@@ -23,6 +23,7 @@
             margin-top: 20px;
             font-size: 24px;
             color: #343a40;
+
         }
 
         table {
