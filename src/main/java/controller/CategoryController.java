@@ -14,7 +14,7 @@ import java.util.List;
 
 @WebServlet("/categories")
 public class CategoryController extends HttpServlet {
-    private ICategoryService categoryService = new CategoryServiceImpl();
+    private final ICategoryService categoryService = new CategoryServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

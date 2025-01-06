@@ -21,9 +21,9 @@ import java.util.List;
 
 @WebServlet("/borrows")
 public class BorrowController extends HttpServlet {
-    private IBorrowService borrowService = new BorrowServiceImpl();
-    private ICustomerService customerService = new CustomerServiceImpl();
-    private IBookService bookService = new BookServiceImpl();
+    private final IBorrowService borrowService = new BorrowServiceImpl();
+    private final ICustomerService customerService = new CustomerServiceImpl();
+    private final IBookService bookService = new BookServiceImpl();
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
