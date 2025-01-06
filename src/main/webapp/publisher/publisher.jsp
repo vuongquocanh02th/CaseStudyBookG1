@@ -113,23 +113,15 @@
         Back to Home
     </a>
     <h1>Publisher Management</h1>
-    <a href="publisher/addPublisher.jsp" class="button">Add New Publisher</a>
     <table>
         <tr>
             <th>ID</th>
             <th>Name</th>
-            <th>Actions</th>
         </tr>
         <% for (Publishers publisher : publishers) { %>
         <tr>
             <td><%= publisher.getPublisherId() %></td>
             <td><%= publisher.getName() %></td>
-            <td class="action-links">
-                <a href="publisher/editPublishers.jsp?id=<%= publisher.getPublisherId() %>">Edit</a>
-                <a href="genres?action=delete&id=<%= publisher.getPublisherId() %>" class="delete-link">
-                    Delete
-                </a>
-            </td>
         </tr>
         <% } %>
     </table>

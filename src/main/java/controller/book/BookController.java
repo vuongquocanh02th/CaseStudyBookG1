@@ -41,7 +41,7 @@ public class BookController extends HttpServlet {
             throws ServletException, IOException {
         String action = request.getParameter("action");
         if (action == null || action.equals("listBooks")) {
-            loadBook(request, response);
+             loadBook(request, response);
 
         }
         switch (action) {
@@ -93,17 +93,10 @@ public class BookController extends HttpServlet {
     }
 
     private void loadBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        int page = 1;
-        int recordsPerPage = 10;
-        if (request.getParameter("page") != null) {
-            page = Integer.parseInt(request.getParameter("page"));
-        }
-        List<Books> booksList = bookDAO.getBooksByPage((page - 1) * recordsPerPage, recordsPerPage);
-        int noOfRecords = bookDAO.getNoOfRecords();
-        int noOfPages = (int) Math.ceil(noOfRecords * 1.0 / recordsPerPage);
+        List<Books> booksList = bookDAO.getAllBooks();
         request.setAttribute("books", booksList);
-        request.setAttribute("noOfPages", noOfPages);
-        request.setAttribute("currentPage", page);
+        request.setAttribute("publishers", publisherDAO.getAllPublishers());
+        request.setAttribute("genres", genreDAO.getAllGenres());
         request.getRequestDispatcher("book/book.jsp").forward(request, response);
     }
 

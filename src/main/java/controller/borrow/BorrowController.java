@@ -61,7 +61,12 @@ public class BorrowController extends HttpServlet {
             request.setAttribute("customers", customers);
             request.setAttribute("books", books);
             request.getRequestDispatcher("/borrow/borrowBooks.jsp").forward(request, response);
-        } else {
+        } else if ("deleteBorrow".equals(action) && "admin".equals(role)) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            BorrowDetail borrowDetail = borrowDAO.getBorrowDetailById(id);
+            request.setAttribute("borrowDetail", borrowDetail);
+            request.getRequestDispatcher("/borrow/deleteBorrows.jsp").forward(request, response);
+        }else {
             response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
         }
     }
@@ -100,6 +105,14 @@ public class BorrowController extends HttpServlet {
             request.setAttribute("customers", customers);
             request.setAttribute("books", books);
             request.getRequestDispatcher("/borrow/borrowBooks.jsp").forward(request, response);
+        }else if ("confirmDeleteBorrow".equals(action) && "admin".equals(role)) {
+            int id = Integer.parseInt(request.getParameter("id"));
+            if (borrowDAO.deleteBorrowDetail(id)) {
+                request.setAttribute("message", "Borrow detail deleted successfully!");
+            } else {
+                request.setAttribute("message", "Failed to delete borrow detail.");
+            }
+            response.sendRedirect(request.getContextPath() + "/borrow?action=manageBorrows");
         } else {
             response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
         }

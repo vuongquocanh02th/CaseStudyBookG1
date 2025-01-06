@@ -114,24 +114,15 @@
     Back to Home
   </a>
   <h1>Genre Management</h1>
-  <a href="genre/addGenre.jsp" class="button">Add New Genre</a>
   <table>
     <tr>
       <th>ID</th>
       <th>Name</th>
-      <th>Actions</th>
     </tr>
     <% for (Genres genre : genres) { %>
     <tr>
       <td><%= genre.getId() %></td>
       <td><%= genre.getName() %></td>
-      <td class="action-links">
-        <a href="genre/editGenre.jsp?id=<%= genre.getId() %>">Edit</a>
-        <a href="genres?action=delete&id=<%= genre.getId() %>" class="delete-link"
-           onclick="return confirm('Are you sure you want to delete this genre?')">
-          Delete
-        </a>
-      </td>
     </tr>
     <% } %>
   </table>
