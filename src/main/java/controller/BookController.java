@@ -121,12 +121,12 @@ public class BookController extends HttpServlet {
         response.sendRedirect("/books");
     }
 
-    private void updateBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        private void updateBook(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         int id = Integer.parseInt(request.getParameter("id"));
         String bookName = request.getParameter("bookName");
         String description = request.getParameter("description");
         String status = request.getParameter("status");
-
+    
         // Handle Genre
         String genIDStr = request.getParameter("genID");
         String newGenre = request.getParameter("newGenre");
@@ -136,7 +136,7 @@ public class BookController extends HttpServlet {
         } else if (genIDStr != null && !genIDStr.isEmpty()) {
             genID = Integer.parseInt(genIDStr);
         }
-
+    
         // Handle Publisher
         String publisherIDStr = request.getParameter("publisherID");
         String newPublisher = request.getParameter("newPublisher");
@@ -146,7 +146,7 @@ public class BookController extends HttpServlet {
         } else if (publisherIDStr != null && !publisherIDStr.isEmpty()) {
             publisherID = Integer.parseInt(publisherIDStr);
         }
-
+    
         // Handle Category
         String categoryIDStr = request.getParameter("categoryID");
         String newCategory = request.getParameter("newCategory");
@@ -156,7 +156,7 @@ public class BookController extends HttpServlet {
         } else if (categoryIDStr != null && !categoryIDStr.isEmpty()) {
             categoryID = Integer.parseInt(categoryIDStr);
         }
-
+    
         Book book = new Book(id, bookName, description, status, genID, publisherID, categoryID);
         bookService.update(book);
         response.sendRedirect("/books");

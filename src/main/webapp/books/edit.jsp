@@ -21,13 +21,17 @@
     <label for="genID">Genre:</label>
     <select id="genID" name="genID">
         <option value="">Select Genre</option>
-        <!-- Options will be populated dynamically -->
+        <c:forEach var="genre" items="${genres}">
+            <option value="${genre.id}" ${book.genID == genre.id ? 'selected' : ''}>${genre.name}</option>
+        </c:forEach>
     </select>
     <input type="text" id="newGenre" name="newGenre" placeholder="Or add new genre"><br>
     <label for="publisherID">Publisher:</label>
     <select id="publisherID" name="publisherID">
         <option value="">Select Publisher</option>
-        <!-- Options will be populated dynamically -->
+        <c:forEach var="publisher" items="${publishers}">
+            <option value="${publisher.id}" ${book.publisherID == publisher.id ? 'selected' : ''}>${publisher.name}</option>
+        </c:forEach>
     </select>
     <input type="text" id="newPublisher" name="newPublisher" placeholder="Or add new publisher"><br>
     <label for="categoryID">Category:</label>
