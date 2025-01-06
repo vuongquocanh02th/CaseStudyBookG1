@@ -18,20 +18,28 @@ public class BookDAO implements IBookDAO {
     private static final String UPDATE_BOOK = "UPDATE Books SET bookName = ?, description = ?, status = ?, genId = ?, publisherId = ?, categoryId = ? WHERE id = ?";
     private static final String DELETE_BOOK = "DELETE FROM Books WHERE ID = ?";
     private static final String INSERT_BOOK = "INSERT INTO Books (BookName, Description, Status, GenID, PublisherID, CategoryID) values (?, ?, ?, ?, ?, ?)";
-    private static final String SELECT_ALL_BOOKS_INFO = "SELECT b.ID, b.BookName, b.Description, b.Status, g.Name AS GenreName,\n" +
-            "       p.Name AS PublisherName, c.Name AS CategoryName\n" +
-            "FROM Books b\n" +
-            "JOIN Genres g ON b.GenID = g.ID\n" +
-            "JOIN Publishers p ON b.PublisherID = p.PublisherID\n" +
+
+   private static final String SELECT_ALL_BOOKS_INFO = "SELECT b.ID, b.BookName, b.Description, b.Status, g.Name AS GenreName, \n" +
+            "       p.Name AS PublisherName, c.Name AS CategoryName \n" +
+            "FROM Books b \n" +
+            "JOIN Genres g ON b.GenID = g.ID \n" +
+            "JOIN Publishers p ON b.PublisherID = p.PublisherID \n" +
             "JOIN Categories c ON b.CategoryID = c.CategoryID";
-    private static final String SEARCH_BOOKS = "SELECT b.ID, b.BookName, b.Description, b.Status, g.Name as GenreName, p.Name as PublisherName, c.Name as CategoryName " +
+    private static final String SEARCH_BOOKS = "SELECT b.ID, b.BookName, b.Description, b.Status, g.Name AS GenreName, " +
+            "p.Name AS PublisherName, c.Name AS CategoryName " +
             "FROM Books b " +
             "JOIN Genres g ON b.GenID = g.ID " +
             "JOIN Publishers p ON b.PublisherID = p.PublisherID " +
             "JOIN Categories c ON b.CategoryID = c.CategoryID " +
             "WHERE p.Name LIKE ? AND g.Name LIKE ?";
 
-    private static final String SELECT_NEWEST_BOOKS = "SELECT * FROM Books ORDER BY entryDate DESC LIMIT 10";
+    private static final String SELECT_BOOKS_BY_PAGE = "SELECT b.*, g.name AS GenreName, p.name AS PublisherName, c.name AS CategoryName " +
+            "FROM Books b " +
+            "JOIN Genres g ON b.genreId = g.id " +
+            "JOIN Publishers p ON b.publisherId = p.id " +
+            "JOIN Categories c ON b.categoryId = c.id " +
+            "LIMIT ?, ?";
+    private static final String SELECT_BOOK_COUNT = "SELECT COUNT(*) FROM Books";
 
     @Override
     public List<Books> getAllBooks() {
@@ -45,7 +53,7 @@ public class BookDAO implements IBookDAO {
                 book.setBookName(rs.getString("BookName"));
                 book.setDescription(rs.getString("Description"));
                 book.setStatus(rs.getString("Status"));
-                // Tạo đối tượng Genres, Publishers, Categories và gán vào book
+
                 Genres genre = new Genres();
                 genre.setName(rs.getString("GenreName"));
                 book.setGenre(genre);
@@ -177,59 +185,4 @@ public class BookDAO implements IBookDAO {
         }
         return books;
     }
-    //phan trang
-    private int noOfRecords;
 
-    public List<Books> getBooksByPage(int offset, int noOfRecords) {
-        List<Books> books = new ArrayList<>();
-        String query = "SELECT SQL_CALC_FOUND_ROWS * FROM Books LIMIT ?, ?";
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(query)) {
-            ps.setInt(1, offset);
-            ps.setInt(2, noOfRecords);
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                Books book = new Books();
-                book.setId(rs.getInt("ID"));
-                book.setBookName(rs.getString("BookName"));
-                book.setDescription(rs.getString("Description"));
-                book.setStatus(rs.getString("Status"));
-                // Set other fields...
-                books.add(book);
-            }
-            rs.close();
-            rs = ps.executeQuery("SELECT FOUND_ROWS()");
-            if (rs.next()) {
-                this.noOfRecords = rs.getInt(1);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return books;
-    }
-
-    public int getNoOfRecords() {
-        return noOfRecords;
-    }
-
-    //10 cuon sach moi nhat
-    public List<Books> getNewestBooks() {
-        List<Books> books = new ArrayList<>();
-        try (Connection conn = DBConnection.getConnection();
-             PreparedStatement ps = conn.prepareStatement(SELECT_NEWEST_BOOKS);
-             ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) {
-                Books book = new Books();
-                book.setId(rs.getInt("ID"));
-                book.setBookName(rs.getString("BookName"));
-                book.setDescription(rs.getString("Description"));
-                book.setStatus(rs.getString("Status"));
-                // Set other fields...
-                books.add(book);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return books;
-    }
-}

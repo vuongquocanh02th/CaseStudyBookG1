@@ -66,7 +66,7 @@ public class BorrowController extends HttpServlet {
             BorrowDetail borrowDetail = borrowDAO.getBorrowDetailById(id);
             request.setAttribute("borrowDetail", borrowDetail);
             request.getRequestDispatcher("/borrow/deleteBorrows.jsp").forward(request, response);
-        } else {
+        }else {
             response.sendRedirect(request.getContextPath() + "/dashboard.jsp");
         }
     }

@@ -186,31 +186,18 @@
                 <td>${book.getBookName()}</td>
                 <td>${book.getDescription()}</td>
                 <td>${book.getStatus()}</td>
-                <td>${book.getGenre().getName()}</td>
-                <td>${book.getPublisher().getName()}</td>
-                <td>${book.getCategory().getName()}</td>
+                <td>${book.genre.getName()}</td>
+                <td>${book.publisher.getName()}</td>
+                <td>${book.category.getName()}</td>
                 <td class="action-buttons">
-                    <a style="background: #007BFF" href="books?action=editBook&id=${book.getId()}">Edit</a>
-                    <a style="background: #721c24" href="books?action=deleteBook&id=${book.getId()}">Delete</a>
+                    <a style="background: #007BFF" href="books?action=editBook&id=${book.id}">Edit</a>
+                    <a style="background: #721c24" href="books?action=deleteBook&id=${book.id}">Delete</a>
                 </td>
             </tr>
         </c:forEach>
         </tbody>
     </table>
-    <div style="text-align: center; margin-top: 20px;">
-        <c:forEach var="i" begin="1" end="${noOfPages}">
-            <a href="books?action=listBooks&page=${i}" style="
-                margin: 0 5px;
-                padding: 10px 15px;
-                text-decoration: none;
-                border: 1px solid #3498db;
-                border-radius: 5px;
-                color: #3498db;
-                font-size: 1rem;
-                ${i == currentPage ? 'background-color: #3498db; color: white;' : ''}">${i}
-            </a>
-        </c:forEach>
-    </div>
+
 </div>
 </body>
 </html>
