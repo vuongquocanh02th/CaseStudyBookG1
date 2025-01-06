@@ -28,6 +28,7 @@ dependencies {
   testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
   implementation group: 'javax.servlet', name: 'jstl', version: '1.2'
   implementation 'mysql:mysql-connector-java:8.0.33'
+  implementation 'com.google.code.gson:gson:2.8.9'
 }
 
 test {
