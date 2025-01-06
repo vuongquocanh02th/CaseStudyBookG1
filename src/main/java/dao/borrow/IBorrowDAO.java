@@ -18,4 +18,6 @@ public interface IBorrowDAO {
     List<BorrowDetail> getAllBorrowDetails();
     BorrowDetail getBorrowDetailById(int id);
     boolean updateBorrowDetail(BorrowDetail borrowDetail);
+
+    boolean deleteBorrowDetail(int id);
 }

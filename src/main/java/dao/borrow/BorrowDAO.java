@@ -276,4 +276,16 @@ public class BorrowDAO implements IBorrowDAO {
         }
         return false;
     }
+    @Override
+    public boolean deleteBorrowDetail(int id) {
+        String query = "DELETE FROM BorrowDetail WHERE ID = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement ps = conn.prepareStatement(query)) {
+            ps.setInt(1, id);
+            return ps.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }
